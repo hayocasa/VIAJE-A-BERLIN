@@ -1,0 +1,1013 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lugares de interés · Berlín 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;900&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --yellow:#F7D417;
+    --yellow-deep:#E0BC00;
+    --ink:#151812;
+    --ink-soft:#4A4E45;
+    --paper:#F5F3EA;
+    --plate:#1B2A22;
+    --plate-2:#22352A;
+    --red:#C1401F;
+    --line:#1B2A22;
+    --white:#FFFDF6;
+    --radius-s:2px;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--paper);
+    background-image:radial-gradient(circle at 1px 1px, rgba(27,42,34,0.06) 1px, transparent 0);
+    background-size:18px 18px;
+    color:var(--ink);
+    font-family:'Work Sans', -apple-system, sans-serif;
+    display:flex;
+    justify-content:center;
+    padding:28px 14px 60px;
+    min-height:100vh;
+  }
+  .frame{width:100%; max-width:440px;}
+
+  /* ---- App bar ---- */
+  .appbar{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:18px;
+  }
+  .back-link{
+    display:flex;
+    align-items:center;
+    gap:6px;
+    text-decoration:none;
+    color:var(--ink);
+    font-family:'Archivo',sans-serif;
+    font-weight:700;
+    font-size:13px;
+  }
+  .appbar .tag{
+    font-family:'Archivo',sans-serif;
+    font-weight:700;
+    font-size:12px;
+    letter-spacing:0.04em;
+    background:var(--ink);
+    color:var(--yellow);
+    padding:6px 10px;
+    border-radius:var(--radius-s);
+  }
+
+  /* ---- Hero ---- */
+  .hero{
+    background:var(--ink);
+    border-radius:6px;
+    padding:22px 20px 20px;
+    color:var(--white);
+    position:relative;
+    overflow:hidden;
+    margin-bottom:20px;
+  }
+  .hero::after{
+    content:"";
+    position:absolute;
+    right:-30px; top:-30px;
+    width:140px;height:140px;
+    background:var(--yellow);
+    opacity:0.12;
+    border-radius:50%;
+  }
+  .hero h1{
+    font-family:'Archivo', sans-serif;
+    font-weight:900;
+    font-size:24px;
+    line-height:1.1;
+    margin:0 0 6px;
+  }
+  .hero p{
+    font-size:13px;
+    color:rgba(255,253,246,0.7);
+    margin:0;
+  }
+
+  /* ---- Day tabs ---- */
+  .tabs{
+    display:flex;
+    gap:6px;
+    margin-bottom:16px;
+  }
+  .tab-btn{
+    flex:1;
+    font-family:'Archivo', sans-serif;
+    font-weight:700;
+    font-size:12px;
+    letter-spacing:0.01em;
+    padding:10px 2px;
+    border:1.5px solid var(--ink);
+    background:transparent;
+    color:var(--ink);
+    border-radius:var(--radius-s);
+    cursor:pointer;
+    transition:background 0.15s ease, color 0.15s ease;
+  }
+  .tab-btn.active{
+    background:var(--ink);
+    color:var(--yellow);
+  }
+  .day-panel{display:none;}
+  .day-panel.active{display:block; animation:fade .2s ease;}
+  @keyframes fade{from{opacity:0; transform:translateY(4px);} to{opacity:1; transform:translateY(0);}}
+
+  .day-note{
+    font-size:12.5px;
+    color:var(--ink-soft);
+    line-height:1.5;
+    margin:0 0 14px;
+    padding:10px 12px;
+    border-left:2.5px solid var(--yellow-deep);
+  }
+
+  /* ---- Place card ---- */
+  .place-card{
+    background:var(--white);
+    border:1.5px solid var(--ink);
+    border-radius:6px;
+    padding:18px;
+    margin-bottom:16px;
+  }
+  .place-top{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    width:100%;
+    background:none;
+    border:none;
+    padding:0;
+    margin:0;
+    text-align:left;
+    cursor:pointer;
+    font-family:inherit;
+    color:inherit;
+  }
+  .chevron{
+    flex-shrink:0;
+    font-size:18px;
+    color:var(--ink-soft);
+    transition:transform 0.2s ease;
+  }
+  .place-card.open .chevron{transform:rotate(180deg);}
+  .place-body{
+    display:none;
+  }
+  .place-card.open .place-body{
+    display:block;
+    animation:reveal 0.2s ease;
+  }
+  @keyframes reveal{from{opacity:0; transform:translateY(-4px);} to{opacity:1; transform:translateY(0);}}
+  .place-icon{
+    flex-shrink:0;
+    width:42px; height:42px;
+    border-radius:50%;
+    background:var(--yellow);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:19px;
+  }
+  .place-title{
+    font-family:'Archivo',sans-serif;
+    font-weight:700;
+    font-size:17px;
+    line-height:1.15;
+  }
+  .place-meta{
+    font-size:12px;
+    color:var(--ink-soft);
+    margin-top:1px;
+  }
+  .time-badge{
+    display:inline-block;
+    margin-top:5px;
+    font-family:'Archivo',sans-serif;
+    font-weight:700;
+    font-size:11px;
+    background:var(--yellow);
+    color:var(--ink);
+    padding:2px 7px;
+    border-radius:10px;
+  }
+
+  .actions-row{
+    display:flex;
+    gap:8px;
+    margin:14px 0 4px;
+  }
+  .listen-btn{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:7px;
+    flex:1;
+    padding:11px;
+    border:1.5px solid var(--ink);
+    border-radius:20px;
+    background:transparent;
+    font-family:'Archivo',sans-serif;
+    font-weight:700;
+    font-size:12.5px;
+    color:var(--ink);
+    cursor:pointer;
+    transition:background 0.15s ease, color 0.15s ease;
+  }
+  .listen-btn:hover{background:var(--ink); color:var(--yellow);}
+  .listen-btn.playing{background:var(--red); color:var(--white); border-color:var(--red);}
+  .listen-btn .wave{font-size:14px;}
+
+  .maps-link{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:7px;
+    flex:1;
+    text-decoration:none;
+    padding:11px;
+    border:1.5px solid var(--ink);
+    border-radius:20px;
+    font-family:'Archivo',sans-serif;
+    font-weight:700;
+    font-size:12.5px;
+    color:var(--ink);
+    transition:background 0.15s ease, color 0.15s ease;
+  }
+  .maps-link:hover{background:var(--ink); color:var(--yellow);}
+  .maps-link svg{width:13px; height:13px; flex-shrink:0;}
+
+  .book-link{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:7px;
+    text-decoration:none;
+    width:100%;
+    margin:0 0 14px;
+    padding:11px;
+    border-radius:20px;
+    background:var(--yellow);
+    border:1.5px solid var(--yellow-deep);
+    font-family:'Archivo',sans-serif;
+    font-weight:700;
+    font-size:12.5px;
+    color:var(--ink);
+    transition:background 0.15s ease;
+  }
+  .book-link:hover{background:var(--yellow-deep);}
+  .book-link.free{
+    background:transparent;
+    border:1.5px dashed rgba(21,24,18,0.35);
+    color:var(--ink-soft);
+  }
+  .book-link.free:hover{background:rgba(21,24,18,0.05);}
+
+  .place-section{margin-top:16px;}
+  .place-section h4{
+    font-family:'Archivo',sans-serif;
+    font-weight:700;
+    font-size:12px;
+    letter-spacing:0.04em;
+    color:var(--ink-soft);
+    text-transform:uppercase;
+    margin:0 0 6px;
+  }
+  .place-section p{
+    font-size:13.5px;
+    line-height:1.55;
+    margin:0;
+  }
+  .place-section ul{
+    margin:0;
+    padding-left:18px;
+  }
+  .place-section li{
+    font-size:13.5px;
+    line-height:1.55;
+    margin-bottom:5px;
+  }
+  .place-section li:last-child{margin-bottom:0;}
+
+  /* ---- Add-card placeholder ---- */
+  .add-card{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    border:1.5px dashed rgba(21,24,18,0.35);
+    border-radius:6px;
+    padding:16px;
+    margin-bottom:12px;
+    color:var(--ink-soft);
+  }
+  .add-card .icon{
+    flex-shrink:0;
+    width:42px; height:42px;
+    border-radius:50%;
+    border:1.5px dashed rgba(21,24,18,0.35);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:17px;
+  }
+  .add-card .ctitle{
+    font-family:'Archivo',sans-serif;
+    font-weight:700;
+    font-size:13.5px;
+    color:var(--ink-soft);
+  }
+  .add-card .cdesc{font-size:12px; margin-top:2px;}
+
+  .foot-note{
+    text-align:center;
+    font-size:11.5px;
+    color:var(--ink-soft);
+    margin-top:20px;
+    line-height:1.5;
+  }
+</style>
+</head>
+<body>
+
+<div class="frame">
+
+  <div class="appbar">
+    <a class="back-link" href="berlin-panel.html">← Panel</a>
+    <span class="tag">LUGARES</span>
+  </div>
+
+  <div class="hero">
+    <h1>Qué visitar en Berlín</h1>
+    <p>Ficha de cada lugar: qué es, curiosidades, y audio para escucharlo sin mirar el móvil.</p>
+  </div>
+
+  <div class="tabs">
+    <button class="tab-btn active" data-day="dia1">Día 1<br>10 oct</button>
+    <button class="tab-btn" data-day="dia2">Día 2<br>11 oct</button>
+    <button class="tab-btn" data-day="dia3">Día 3<br>12 oct</button>
+    <button class="tab-btn" data-day="extra">Extra</button>
+  </div>
+
+  <!-- ================= DÍA 1 ================= -->
+  <div class="day-panel active" id="dia1">
+    <p class="day-note">Berlín imperial y verde: gobierno, memoria y el Berlín moderno de Potsdamer Platz.</p>
+
+    <div class="place-card">
+      <button class="place-top" onclick="toggleCard(this)">
+        <span class="place-icon">🏛️</span>
+        <div>
+          <div class="place-title">Puerta de Brandeburgo</div>
+          <div class="place-meta">Pariser Platz · Mitte</div>
+          <span class="time-badge">9:00</span>
+        </div>
+        <span class="chevron">⌄</span>
+      </button>
+      <div class="place-body">
+        <div class="actions-row">
+          <button class="listen-btn" onclick="toggleSpeak(this)"><span class="wave">🔊</span><span class="lbl">Escuchar</span></button>
+          <a class="maps-link" href="https://www.google.com/maps/search/?api=1&query=Brandenburger+Tor%2C+Pariser+Platz%2C+Berlin" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            Cómo llegar
+          </a>
+        </div>
+        <div class="place-section">
+          <h4>Qué es</h4>
+          <p class="place-text">Es el monumento más famoso de Berlín y la única de las 18 antiguas puertas de la ciudad que sigue en pie. La construyó el rey Federico Guillermo II entre 1788 y 1791, inspirándose en la entrada a la Acrópolis de Atenas. Tiene doce columnas dóricas que forman cinco pasillos: el central estaba reservado antiguamente a la familia real.</p>
+        </div>
+        <div class="place-section">
+          <h4>Curiosidades</h4>
+          <ul class="place-text">
+            <li>En lo alto hay una escultura llamada la Cuadriga: una carroza tirada por cuatro caballos guiada por la diosa de la Victoria. Napoleón la robó en 1806 y se la llevó a París; volvió a Berlín tras su derrota.</li>
+            <li>Durante la Guerra Fría quedó justo en la frontera entre Berlín Este y Berlín Oeste, atrapada e inaccesible por el Muro.</li>
+            <li>El 9 de noviembre de 1989, con la caída del Muro, se convirtió en el punto de encuentro para celebrar la reunificación alemana.</li>
+            <li>Aparece impresa en las monedas alemanas de 10, 20 y 50 céntimos de euro.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="place-card">
+      <button class="place-top" onclick="toggleCard(this)">
+        <span class="place-icon">🕯️</span>
+        <div>
+          <div class="place-title">Memorial del Holocausto</div>
+          <div class="place-meta">Cora-Berliner-Straße · Mitte</div>
+          <span class="time-badge">9:45</span>
+        </div>
+        <span class="chevron">⌄</span>
+      </button>
+      <div class="place-body">
+        <div class="actions-row">
+          <button class="listen-btn" onclick="toggleSpeak(this)"><span class="wave">🔊</span><span class="lbl">Escuchar</span></button>
+          <a class="maps-link" href="https://www.google.com/maps/search/?api=1&query=Denkmal+f%C3%BCr+die+ermordeten+Juden+Europas%2C+Cora-Berliner-Stra%C3%9Fe+1%2C+Berlin" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            Cómo llegar
+          </a>
+        </div>
+        <div class="place-section">
+          <h4>Qué es</h4>
+          <p class="place-text">El Monumento a los Judíos Asesinados de Europa, a un paso de la Puerta de Brandeburgo. Es obra del arquitecto neoyorquino Peter Eisenman, inaugurado en 2005 tras años de debate en el Bundestag. Sobre 19.000 m² se distribuyen 2.711 bloques de hormigón de distintas alturas, en una cuadrícula sobre un terreno ondulado que se puede recorrer desde cualquier lado, a cualquier hora y de forma gratuita. Debajo hay un centro de información con la historia de las víctimas.</p>
+        </div>
+        <div class="place-section">
+          <h4>Curiosidades</h4>
+          <ul class="place-text">
+            <li>No hay ningún cartel ni placa que explique su significado dentro del propio campo de estelas: Eisenman quiso que cada visitante lo interpretara a su manera.</li>
+            <li>Las losas varían entre 20 centímetros y casi 5 metros de altura; caminar hacia el centro, donde el suelo se hunde, provoca una sensación deliberada de desorientación.</li>
+            <li>Según el propio arquitecto, el diseño representa un sistema aparentemente ordenado que ha perdido el contacto con la razón.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="place-card">
+      <button class="place-top" onclick="toggleCard(this)">
+        <span class="place-icon">🏛️</span>
+        <div>
+          <div class="place-title">Reichstag y cúpula de cristal</div>
+          <div class="place-meta">Platz der Republik · Tiergarten</div>
+          <span class="time-badge">10:30</span>
+        </div>
+        <span class="chevron">⌄</span>
+      </button>
+      <div class="place-body">
+        <div class="actions-row">
+          <button class="listen-btn" onclick="toggleSpeak(this)"><span class="wave">🔊</span><span class="lbl">Escuchar</span></button>
+          <a class="maps-link" href="https://www.google.com/maps/search/?api=1&query=Reichstag%2C+Platz+der+Republik+1%2C+Berlin" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            Cómo llegar
+          </a>
+        </div>
+        <a class="book-link" href="https://visite.bundestag.de" target="_blank" rel="noopener">🎟️ Reservar entrada a la cúpula (gratis, obligatorio)</a>
+        <div class="place-section">
+          <h4>Qué es</h4>
+          <p class="place-text">Es la sede del Parlamento alemán (Bundestag), construida entre 1884 y 1894 en estilo neorrenacentista. Lo más llamativo es su cúpula de cristal, obra del arquitecto Norman Foster tras la reunificación: se sube en ascensor y una rampa en espiral permite mirar literalmente hacia abajo, sobre la sala donde se reúnen los diputados. La visita a la cúpula es gratuita, pero hay que reservar entrada con antelación en la web del Bundestag.</p>
+        </div>
+        <div class="place-section">
+          <h4>Curiosidades</h4>
+          <ul class="place-text">
+            <li>Ardió en un incendio en 1933 que los nazis usaron como excusa para recortar libertades civiles, y quedó muy dañado en la batalla final de la Segunda Guerra Mundial.</li>
+            <li>La inscripción "Dem Deutschen Volke" ("Al pueblo alemán") de la fachada se añadió en 1916, pese a la resistencia inicial del káiser Guillermo II.</li>
+            <li>El tejado está cubierto de paneles solares: fue uno de los primeros parlamentos del mundo en usar energía renovable a esta escala.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="place-card">
+      <button class="place-top" onclick="toggleCard(this)">
+        <span class="place-icon">🌳</span>
+        <div>
+          <div class="place-title">Tiergarten</div>
+          <div class="place-meta">Entre la Puerta de Brandeburgo y Potsdamer Platz</div>
+          <span class="time-badge">12:00</span>
+        </div>
+        <span class="chevron">⌄</span>
+      </button>
+      <div class="place-body">
+        <div class="actions-row">
+          <button class="listen-btn" onclick="toggleSpeak(this)"><span class="wave">🔊</span><span class="lbl">Escuchar</span></button>
+          <a class="maps-link" href="https://www.google.com/maps/search/?api=1&query=Gro%C3%9Fer+Tiergarten%2C+Berlin" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            Cómo llegar
+          </a>
+        </div>
+        <div class="place-section">
+          <h4>Qué es</h4>
+          <p class="place-text">El gran parque verde de Berlín, el equivalente al Central Park de Nueva York. Ocupa 210 hectáreas entre la Puerta de Brandeburgo y la zona de Potsdamer Platz. Fue coto de caza real hasta que Federico I lo abrió al público a finales del siglo XVII; entre 1833 y 1838 el paisajista Peter Joseph Lenné lo transformó en parque de estilo inglés. Perfecto para pasear, hacer un picnic o alquilar una barca en sus lagos.</p>
+        </div>
+        <div class="place-section">
+          <h4>Curiosidades</h4>
+          <ul class="place-text">
+            <li>Tras la Segunda Guerra Mundial quedó casi sin árboles: los berlineses talaron lo poco que quedaba en pie para usarlo como leña en el crudo invierno de 1945-1946, y hasta cultivaron patatas en sus praderas.</li>
+            <li>En su interior hay un monumento soviético de 1945 dedicado a los soldados del Ejército Rojo caídos en la batalla de Berlín.</li>
+            <li>La Columna de la Victoria (Siegessäule), coronada por un ángel dorado, se alza en el corazón del parque y desde su mirador se ve gran parte de la ciudad.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="place-card">
+      <button class="place-top" onclick="toggleCard(this)">
+        <span class="place-icon">🚦</span>
+        <div>
+          <div class="place-title">Potsdamer Platz</div>
+          <div class="place-meta">Mitte / Tiergarten</div>
+          <span class="time-badge">14:00</span>
+        </div>
+        <span class="chevron">⌄</span>
+      </button>
+      <div class="place-body">
+        <div class="actions-row">
+          <button class="listen-btn" onclick="toggleSpeak(this)"><span class="wave">🔊</span><span class="lbl">Escuchar</span></button>
+          <a class="maps-link" href="https://www.google.com/maps/search/?api=1&query=Potsdamer+Platz%2C+Berlin" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            Cómo llegar
+          </a>
+        </div>
+        <div class="place-section">
+          <h4>Qué es</h4>
+          <p class="place-text">En los años 20 y 30 fue la plaza más transitada de Europa, corazón de la vida nocturna berlinesa. Quedó arrasada por los bombardeos de la Segunda Guerra Mundial y, con la construcción del Muro, se convirtió en un descampado fantasma dividido entre los dos Berlines. Tras la reunificación se reconstruyó por completo con arquitectos como Renzo Piano, y hoy es un distrito moderno con rascacielos, el Sony Center y salas de cine.</p>
+        </div>
+        <div class="place-section">
+          <h4>Curiosidades</h4>
+          <ul class="place-text">
+            <li>Todavía se puede ver en el suelo, marcada con adoquines, la línea exacta por la que pasaba el Muro de Berlín.</li>
+            <li>Frente a la estación hay una réplica del semáforo de 1924, el primero de Europa, instalado aquí porque el tráfico de la plaza era tan caótico que provocaba accidentes constantes.</li>
+            <li>Cada febrero acoge la Berlinale, el festival de cine más importante de Alemania.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="place-card">
+      <button class="place-top" onclick="toggleCard(this)">
+        <span class="place-icon">🛍️</span>
+        <div>
+          <div class="place-title">Mall of Berlin</div>
+          <div class="place-meta">Leipziger Platz · Mitte</div>
+          <span class="time-badge">16:00</span>
+        </div>
+        <span class="chevron">⌄</span>
+      </button>
+      <div class="place-body">
+        <div class="actions-row">
+          <button class="listen-btn" onclick="toggleSpeak(this)"><span class="wave">🔊</span><span class="lbl">Escuchar</span></button>
+          <a class="maps-link" href="https://www.google.com/maps/search/?api=1&query=Mall+of+Berlin%2C+Leipziger+Platz+12%2C+Berlin" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            Cómo llegar
+          </a>
+        </div>
+        <div class="place-section">
+          <h4>Qué es</h4>
+          <p class="place-text">El gran centro comercial del centro de Berlín, en la Leipziger Platz, entre la Potsdamer Platz y la Friedrichstraße. Abrió en 2014 con unos 76.000 m² repartidos en varias plantas: moda, electrónica, restaurantes y una plaza cubierta bajo una gran cúpula de cristal. Buena opción si un día de lluvia apetece hacer una pausa de compras en pleno centro.</p>
+        </div>
+        <div class="place-section">
+          <h4>Curiosidades</h4>
+          <ul class="place-text">
+            <li>Se construyó sobre el solar del antiguo Wertheim, que llegó a ser el mayor almacén de Europa hasta que quedó destruido en la Segunda Guerra Mundial.</li>
+            <li>Por su cercanía con la antigua frontera, el solar quedó sin construir durante 40 años; entre 1991 y 2005 los sótanos en ruinas del Wertheim albergaron el mítico club de techno Tresor.</li>
+            <li>La plaza cubierta del centro, bajo su cúpula de cristal, recuerda al atrio con luz natural que tenía el antiguo Wertheim.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= DÍA 2 ================= -->
+  <div class="day-panel" id="dia2">
+    <p class="day-note">Unter den Linden y la Isla de los Museos: el Berlín histórico y monumental, cerca del hotel.</p>
+
+    <div class="place-card">
+      <button class="place-top" onclick="toggleCard(this)">
+        <span class="place-icon">🪖</span>
+        <div>
+          <div class="place-title">Checkpoint Charlie</div>
+          <div class="place-meta">Friedrichstraße · Mitte</div>
+          <span class="time-badge">9:30</span>
+        </div>
+        <span class="chevron">⌄</span>
+      </button>
+      <div class="place-body">
+        <div class="actions-row">
+          <button class="listen-btn" onclick="toggleSpeak(this)"><span class="wave">🔊</span><span class="lbl">Escuchar</span></button>
+          <a class="maps-link" href="https://www.google.com/maps/search/?api=1&query=Checkpoint+Charlie%2C+Friedrichstra%C3%9Fe+43%2C+Berlin" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            Cómo llegar
+          </a>
+        </div>
+        <a class="book-link" href="https://www.mauermuseum.de" target="_blank" rel="noopener">🎟️ Reservar entrada al Museo del Muro</a>
+        <div class="place-section">
+          <h4>Qué es</h4>
+          <p class="place-text">Fue el paso fronterizo más famoso entre Berlín Este y Oeste durante la Guerra Fría, abierto el 22 de septiembre de 1961, semanas después de levantarse el Muro. Por aquí solo podían cruzar extranjeros, diplomáticos y personal militar aliado. Hoy se puede ver la réplica de la garita de control (gratis, al aire libre) y, justo al lado, el Museo del Muro (Mauermuseum), con entrada de pago.</p>
+        </div>
+        <div class="place-section">
+          <h4>Curiosidades</h4>
+          <ul class="place-text">
+            <li>En octubre de 1961 protagonizó uno de los momentos más tensos de la Guerra Fría: tanques americanos y soviéticos se apuntaron cara a cara durante 16 horas, hasta que los soviéticos se retiraron sin disparar un solo tiro.</li>
+            <li>La garita original de verdad se conserva en el Museo Aliado de Berlín; la que se ve hoy en la calle es una réplica.</li>
+            <li>El museo documenta fugas muy ingeniosas: coches con compartimentos ocultos, un mini submarino e incluso una tabla de surf hueca.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="place-card">
+      <button class="place-top" onclick="toggleCard(this)">
+        <span class="place-icon">🎻</span>
+        <div>
+          <div class="place-title">Gendarmenmarkt</div>
+          <div class="place-meta">Mitte</div>
+          <span class="time-badge">10:30</span>
+        </div>
+        <span class="chevron">⌄</span>
+      </button>
+      <div class="place-body">
+        <div class="actions-row">
+          <button class="listen-btn" onclick="toggleSpeak(this)"><span class="wave">🔊</span><span class="lbl">Escuchar</span></button>
+          <a class="maps-link" href="https://www.google.com/maps/search/?api=1&query=Gendarmenmarkt%2C+Berlin" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            Cómo llegar
+          </a>
+        </div>
+        <div class="place-section">
+          <h4>Qué es</h4>
+          <p class="place-text">Considerada por muchos la plaza más bonita de Berlín. Reúne tres edificios en perfecta simetría: la Konzerthaus (sala de conciertos) en el centro, flanqueada por la Catedral Francesa y la Catedral Alemana, dos iglesias gemelas. Nació a finales del siglo XVII como barrio para los hugonotes franceses refugiados en Prusia, y debe su nombre a un regimiento de coraceros (gens d'armes) que tuvo aquí sus caballerizas.</p>
+        </div>
+        <div class="place-section">
+          <h4>Curiosidades</h4>
+          <ul class="place-text">
+            <li>Pese a llamarse "catedrales", ninguna de las dos iglesias tiene rango de catedral: una es luterana y la otra reformada, herencia de la comunidad francesa protestante.</li>
+            <li>Delante de la Konzerthaus hay una estatua del poeta Friedrich Schiller, autor del poema que Beethoven convirtió en el Himno de la Alegría, el himno europeo.</li>
+            <li>En Navidad acoge uno de los mercadillos navideños más bonitos de la ciudad, con más de un millón de visitantes cada año.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="place-card">
+      <button class="place-top" onclick="toggleCard(this)">
+        <span class="place-icon">📚</span>
+        <div>
+          <div class="place-title">Bebelplatz</div>
+          <div class="place-meta">Unter den Linden · Mitte</div>
+          <span class="time-badge">11:15</span>
+        </div>
+        <span class="chevron">⌄</span>
+      </button>
+      <div class="place-body">
+        <div class="actions-row">
+          <button class="listen-btn" onclick="toggleSpeak(this)"><span class="wave">🔊</span><span class="lbl">Escuchar</span></button>
+          <a class="maps-link" href="https://www.google.com/maps/search/?api=1&query=Bebelplatz%2C+Berlin" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            Cómo llegar
+          </a>
+        </div>
+        <div class="place-section">
+          <h4>Qué es</h4>
+          <p class="place-text">Una plaza tranquila junto a la Ópera Estatal y la Universidad Humboldt donde ocurrió uno de los episodios más oscuros del nazismo: la quema de libros del 10 de mayo de 1933. En el centro hay un monumento casi invisible: una placa de cristal en el suelo que deja ver una biblioteca subterránea vacía, obra del artista israelí Micha Ullman.</p>
+        </div>
+        <div class="place-section">
+          <h4>Curiosidades</h4>
+          <ul class="place-text">
+            <li>Esa noche los estudiantes nazis, tras un discurso de Goebbels, quemaron unos 20.000 libros de autores como Marx, Freud, Kafka o Einstein; las estanterías vacías del monumento tienen capacidad para exactamente esos 20.000 ejemplares.</li>
+            <li>El escritor Erich Kästner presenció en persona cómo ardían sus propios libros esa misma noche.</li>
+            <li>Antes se llamaba Opernplatz (Plaza de la Ópera); tomó su nombre actual en 1947 en honor a August Bebel, fundador del Partido Socialdemócrata alemán.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="place-card">
+      <button class="place-top" onclick="toggleCard(this)">
+        <span class="place-icon">🏺</span>
+        <div>
+          <div class="place-title">Isla de los Museos</div>
+          <div class="place-meta">Museumsinsel · Mitte</div>
+          <span class="time-badge">12:00</span>
+        </div>
+        <span class="chevron">⌄</span>
+      </button>
+      <div class="place-body">
+        <div class="actions-row">
+          <button class="listen-btn" onclick="toggleSpeak(this)"><span class="wave">🔊</span><span class="lbl">Escuchar</span></button>
+          <a class="maps-link" href="https://www.google.com/maps/search/?api=1&query=Museumsinsel%2C+Berlin" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            Cómo llegar
+          </a>
+        </div>
+        <a class="book-link" href="https://www.smb.museum/en/plan-your-visit/prices-tickets/" target="_blank" rel="noopener">🎟️ Reservar entrada a los museos</a>
+        <div class="place-section">
+          <h4>Qué es</h4>
+          <p class="place-text">Un complejo de cinco museos reunidos en una isla del río Spree, declarado Patrimonio de la Humanidad por la UNESCO en 1999. El más famoso es el Museo de Pérgamo, con la Puerta de Ishtar de Babilonia; el Neues Museum guarda el busto de Nefertiti, y el resto (Altes Museum, Alte Nationalgalerie y Bode-Museum) cubren desde la antigüedad clásica hasta el arte del siglo XIX.</p>
+        </div>
+        <div class="place-section">
+          <h4>Curiosidades</h4>
+          <ul class="place-text">
+            <li>El Pergamonmuseum está parcialmente cerrado por obras hasta 2027, así que conviene comprobar qué salas están abiertas antes de ir.</li>
+            <li>La Puerta de Ishtar que se ve allí es la reconstrucción de la entrada original a la antigua Babilonia, del siglo VI a.C.</li>
+            <li>Todo el conjunto sufrió graves daños en la Segunda Guerra Mundial; el Neues Museum, por ejemplo, no reabrió hasta 2009, tras décadas en ruinas.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="place-card">
+      <button class="place-top" onclick="toggleCard(this)">
+        <span class="place-icon">⛪</span>
+        <div>
+          <div class="place-title">Catedral de Berlín</div>
+          <div class="place-meta">Berliner Dom · Isla de los Museos</div>
+          <span class="time-badge">15:00</span>
+        </div>
+        <span class="chevron">⌄</span>
+      </button>
+      <div class="place-body">
+        <div class="actions-row">
+          <button class="listen-btn" onclick="toggleSpeak(this)"><span class="wave">🔊</span><span class="lbl">Escuchar</span></button>
+          <a class="maps-link" href="https://www.google.com/maps/search/?api=1&query=Berliner+Dom%2C+Am+Lustgarten%2C+Berlin" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            Cómo llegar
+          </a>
+        </div>
+        <a class="book-link" href="https://www.berlinerdom.de/en" target="_blank" rel="noopener">🎟️ Reservar entrada a la catedral</a>
+        <div class="place-section">
+          <h4>Qué es</h4>
+          <p class="place-text">La gran iglesia protestante de Berlín, en la Isla de los Museos, con una cúpula que se ve desde buena parte de la ciudad. El edificio actual se terminó en 1905 por encargo del káiser Guillermo II, que quería una iglesia tan imponente como San Pedro del Vaticano o San Pablo de Londres. Bajo sus naves está la cripta de los Hohenzollern, con casi 100 tumbas de la dinastía real prusiana: uno de los panteones dinásticos más importantes de Europa.</p>
+        </div>
+        <div class="place-section">
+          <h4>Curiosidades</h4>
+          <ul class="place-text">
+            <li>Se puede subir por 270 escalones hasta la base de la cúpula, con una de las mejores vistas panorámicas de Berlín.</li>
+            <li>La cripta de los Hohenzollern estuvo años en obras de restauración y reabrió por completo en marzo de 2026.</li>
+            <li>Los domingos hay misa gratuita a las 10:00, sin colas de turistas: una forma distinta de conocer el interior.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="place-card">
+      <button class="place-top" onclick="toggleCard(this)">
+        <span class="place-icon">📡</span>
+        <div>
+          <div class="place-title">Torre de TV (Fernsehturm)</div>
+          <div class="place-meta">Alexanderplatz · Mitte</div>
+          <span class="time-badge">17:30</span>
+        </div>
+        <span class="chevron">⌄</span>
+      </button>
+      <div class="place-body">
+        <div class="actions-row">
+          <button class="listen-btn" onclick="toggleSpeak(this)"><span class="wave">🔊</span><span class="lbl">Escuchar</span></button>
+          <a class="maps-link" href="https://www.google.com/maps/search/?api=1&query=Berliner+Fernsehturm%2C+Panoramastra%C3%9Fe+1a%2C+Berlin" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            Cómo llegar
+          </a>
+        </div>
+        <a class="book-link" href="https://tv-turm.de/en" target="_blank" rel="noopener">🎟️ Reservar entrada al mirador</a>
+        <div class="place-section">
+          <h4>Qué es</h4>
+          <p class="place-text">Con 368 metros, es la construcción más alta de Alemania. La levantó la Alemania comunista (RDA) entre 1965 y 1969 en pleno Alexanderplatz, como símbolo del poder y del progreso tecnológico socialista. Tiene un mirador y un restaurante giratorio (da una vuelta completa cada 30 minutos) desde los que en días despejados se ve hasta 42 km de distancia.</p>
+        </div>
+        <div class="place-section">
+          <h4>Curiosidades</h4>
+          <ul class="place-text">
+            <li>Los berlineses la apodan cariñosamente "Telespargel" (el tele-espárrago).</li>
+            <li>Tiene un fallo de diseño muy famoso: cuando el sol da en la esfera de acero, se refleja formando una cruz. Como la cruz era justo el símbolo que el régimen comunista quería evitar, los berlineses del oeste la bautizaron como "la venganza del Papa".</li>
+            <li>Sale en muchísimas películas ambientadas en Berlín y casi todas las líneas de metro y S-Bahn paran junto a ella, en Alexanderplatz.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= DÍA 3 ================= -->
+  <div class="day-panel" id="dia3">
+    <p class="day-note">El Muro y el este de Berlín: de la frontera real al arte urbano. Día más ligero, por si hay Oktoberfest esa noche.</p>
+
+    <div class="place-card">
+      <button class="place-top" onclick="toggleCard(this)">
+        <span class="place-icon">🧱</span>
+        <div>
+          <div class="place-title">Muro de Berlín (Bernauer Straße)</div>
+          <div class="place-meta">Memorial del Muro · Wedding/Mitte</div>
+          <span class="time-badge">9:30</span>
+        </div>
+        <span class="chevron">⌄</span>
+      </button>
+      <div class="place-body">
+        <div class="actions-row">
+          <button class="listen-btn" onclick="toggleSpeak(this)"><span class="wave">🔊</span><span class="lbl">Escuchar</span></button>
+          <a class="maps-link" href="https://www.google.com/maps/search/?api=1&query=Gedenkst%C3%A4tte+Berliner+Mauer%2C+Bernauer+Stra%C3%9Fe+111%2C+Berlin" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            Cómo llegar
+          </a>
+        </div>
+        <div class="place-section">
+          <h4>Qué es</h4>
+          <p class="place-text">Si la East Side Gallery es el Muro convertido en arte, el Memorial de Bernauer Straße es el Muro tal y como funcionaba de verdad. Se extiende 1,4 km por la antigua franja fronteriza e incluye el único tramo conservado con toda su profundidad original: los dos muros paralelos, la franja de la muerte y una torre de vigilancia, visibles desde un mirador. También hay un centro de documentación y la Capilla de la Reconciliación. Entrada gratuita.</p>
+        </div>
+        <div class="place-section">
+          <h4>Curiosidades</h4>
+          <ul class="place-text">
+            <li>Aquí, en agosto de 1961, algunos vecinos de Berlín Este saltaron desde las ventanas de sus propios pisos a las lonas de los bomberos de Berlín Oeste para escapar, ya que el Muro se levantó pegado a las fachadas de sus edificios.</li>
+            <li>Es donde se tomó la famosa foto del soldado Conrad Schumann saltando la alambrada hacia el oeste, dos días después de cerrarse la frontera.</li>
+            <li>Bajo esta calle los berlineses del este cavaron numerosos túneles de fuga a lo largo de los años del Muro.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="place-card">
+      <button class="place-top" onclick="toggleCard(this)">
+        <span class="place-icon">🎨</span>
+        <div>
+          <div class="place-title">East Side Gallery</div>
+          <div class="place-meta">Mühlenstraße · Friedrichshain-Kreuzberg</div>
+          <span class="time-badge">12:00</span>
+        </div>
+        <span class="chevron">⌄</span>
+      </button>
+      <div class="place-body">
+        <div class="actions-row">
+          <button class="listen-btn" onclick="toggleSpeak(this)"><span class="wave">🔊</span><span class="lbl">Escuchar</span></button>
+          <a class="maps-link" href="https://www.google.com/maps/search/?api=1&query=East+Side+Gallery%2C+M%C3%BChlenstra%C3%9Fe%2C+Berlin" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            Cómo llegar
+          </a>
+        </div>
+        <div class="place-section">
+          <h4>Qué es</h4>
+          <p class="place-text">Es el tramo de Muro de Berlín en pie más largo que queda, 1,3 km junto al río Spree. En la primavera de 1990, poco después de la caída del Muro, 118 artistas de 21 países lo cubrieron con más de cien murales, convirtiéndolo en la galería al aire libre más larga del mundo. Es gratis y se puede recorrer caminando en cualquier momento.</p>
+        </div>
+        <div class="place-section">
+          <h4>Curiosidades</h4>
+          <ul class="place-text">
+            <li>El mural más fotografiado es el "Beso fraternal" de Dmitri Vrubel, que representa el beso entre los líderes Brézhnev y Honecker.</li>
+            <li>Otro clásico es "Test the Best" de Birgit Kinder: un Trabant (el coche típico de Alemania del Este) atravesando el muro.</li>
+            <li>Los artistas solo pudieron pintar en el lado este porque, durante la Guerra Fría, esa cara del muro era inaccesible para la población; el lado oeste sí estaba lleno de grafitis.</li>
+            <li>En 1991 fue declarada monumento histórico protegido.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="place-card">
+      <button class="place-top" onclick="toggleCard(this)">
+        <span class="place-icon">🎧</span>
+        <div>
+          <div class="place-title">Teufelsberg (opcional)</div>
+          <div class="place-meta">Grunewald · algo alejado del centro</div>
+          <span class="time-badge">15:30</span>
+        </div>
+        <span class="chevron">⌄</span>
+      </button>
+      <div class="place-body">
+        <div class="actions-row">
+          <button class="listen-btn" onclick="toggleSpeak(this)"><span class="wave">🔊</span><span class="lbl">Escuchar</span></button>
+          <a class="maps-link" href="https://www.google.com/maps/search/?api=1&query=Teufelsberg%2C+Teufelsseechaussee+10%2C+Berlin" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            Cómo llegar
+          </a>
+        </div>
+        <a class="book-link" href="https://teufelsberg-berlin.de/en" target="_blank" rel="noopener">🎟️ Reservar entrada / tour</a>
+        <div class="place-section">
+          <h4>Qué es</h4>
+          <p class="place-text">La joya menos turística de la lista: una antigua estación de escucha estadounidense de la Guerra Fría, en ruinas y llena de grafitis, encima de una colina artificial de 120 m al oeste de la ciudad. Hoy se visita en tours guiados (unos 20-25 €) y ofrece unas vistas de Berlín espectaculares. Solo si sobra tiempo y energía ese día: requiere trayecto propio y una tarde aparte.</p>
+        </div>
+        <div class="place-section">
+          <h4>Curiosidades</h4>
+          <ul class="place-text">
+            <li>La colina entera es artificial: está formada por más de 75 millones de m³ de escombros de la Berlín bombardeada tras la Segunda Guerra Mundial, apilados sobre una academia militar nazi inacabada que era tan sólida que no pudo demolerse.</li>
+            <li>Durante la Guerra Fría, EE.UU. usó sus antenas para interceptar comunicaciones del bloque soviético, hasta el final de la guerra.</li>
+            <li>El nombre significa "Montaña del Diablo", por el lago Teufelsee (Lago del Diablo) que hay al pie.</li>
+            <li>Hoy es zona verde popular entre los berlineses: en invierno se usa para trineo y en verano para volar cometas o hacer parapente.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= EXTRA ================= -->
+  <div class="day-panel" id="extra">
+    <p class="day-note">Fuera del recorrido de 3 días: encaja mejor si tenéis una jornada extra completa, no metido entre otras paradas.</p>
+
+    <div class="place-card">
+      <button class="place-top" onclick="toggleCard(this)">
+        <span class="place-icon">🕊️</span>
+        <div>
+          <div class="place-title">Campo de concentración de Sachsenhausen</div>
+          <div class="place-meta">Oranienburg · ~35 km al norte de Berlín</div>
+        </div>
+        <span class="chevron">⌄</span>
+      </button>
+      <div class="place-body">
+        <div class="actions-row">
+          <button class="listen-btn" onclick="toggleSpeak(this)"><span class="wave">🔊</span><span class="lbl">Escuchar</span></button>
+          <a class="maps-link" href="https://www.google.com/maps/search/?api=1&query=Gedenkst%C3%A4tte+Sachsenhausen%2C+Stra%C3%9Fe+der+Nationen+22%2C+Oranienburg" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            Cómo llegar
+          </a>
+        </div>
+        <a class="book-link free" href="https://www.stiftung-bg.de/gums/en" target="_blank" rel="noopener">ℹ️ Web oficial (entrada gratuita, sin reserva)</a>
+        <div class="place-section">
+          <h4>Qué es</h4>
+          <p class="place-text">Un antiguo campo de concentración nazi en Oranienburg, a unos 35 km al norte de Berlín (unos 45-50 min en tren). Se construyó en 1936 como "campo modelo" para el resto del sistema concentracionario nazi. Por aquí pasaron unas 200.000 personas —presos políticos, judíos, gitanos, homosexuales, prisioneros de guerra soviéticos— y al menos 30.000 murieron. Hoy es un memorial y museo; la entrada general es gratuita (la audioguía cuesta unos 3-4 €). Necesita casi medio día entero (ida + visita + vuelta), por eso no encaja bien metido entre otras paradas.</p>
+        </div>
+        <div class="place-section">
+          <h4>Curiosidades</h4>
+          <ul class="place-text">
+            <li>Su diseño en forma de triángulo permitía a un único puesto de vigilancia en la entrada controlar visualmente todo el campo a la vez.</li>
+            <li>Sirvió de plantilla para organizar otros campos de concentración del régimen nazi.</li>
+            <li>Tras la guerra, la URSS lo siguió usando como campo especial de internamiento hasta 1950, antes de convertirse en el memorial que es hoy.</li>
+            <li>Se llega fácil en transporte público: trenes S1, RE5 o RB12 hasta Oranienburg, y desde la estación son unos 20 minutos a pie o el autobús 804.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="add-card">
+      <span class="icon">＋</span>
+      <span class="body">
+        <div class="ctitle">Siguiente lugar</div>
+        <div class="cdesc">Dime cuál añadimos y le hacemos su ficha</div>
+      </span>
+    </div>
+  </div>
+
+  <div class="foot-note">El audio usa la voz del navegador (Web Speech API) · no necesita conexión a APIs externas</div>
+
+</div>
+
+<script>
+  let currentUtterance = null;
+  let currentBtn = null;
+
+  function toggleDay(btn){
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.day-panel').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById(btn.dataset.day).classList.add('active');
+
+    // Si cambiamos de día mientras suena un audio, lo detenemos
+    if(currentBtn){
+      speechSynthesis.cancel();
+      resetBtn(currentBtn);
+      currentUtterance = null;
+      currentBtn = null;
+    }
+  }
+
+  function toggleCard(header){
+    const card = header.closest('.place-card');
+    const wasOpen = card.classList.contains('open');
+
+    if(wasOpen && currentBtn && card.contains(currentBtn)){
+      speechSynthesis.cancel();
+      resetBtn(currentBtn);
+      currentUtterance = null;
+      currentBtn = null;
+    }
+
+    card.classList.toggle('open');
+  }
+
+  function resetBtn(btn){
+    btn.classList.remove('playing');
+    btn.querySelector('.lbl').textContent = 'Escuchar';
+    btn.querySelector('.wave').textContent = '🔊';
+  }
+
+  function toggleSpeak(btn){
+    const card = btn.closest('.place-card');
+    const text = Array.from(card.querySelectorAll('.place-text'))
+      .map(el => el.innerText)
+      .join('. ');
+
+    if(currentBtn === btn){
+      speechSynthesis.cancel();
+      resetBtn(btn);
+      currentUtterance = null;
+      currentBtn = null;
+      return;
+    }
+
+    if(currentBtn){
+      speechSynthesis.cancel();
+      resetBtn(currentBtn);
+    }
+
+    const utter = new SpeechSynthesisUtterance(text);
+    utter.lang = 'es-ES';
+    utter.rate = 0.95;
+    utter.onend = () => {
+      resetBtn(btn);
+      currentUtterance = null;
+      currentBtn = null;
+    };
+
+    btn.classList.add('playing');
+    btn.querySelector('.lbl').textContent = 'Detener';
+    btn.querySelector('.wave').textContent = '⏸';
+
+    speechSynthesis.speak(utter);
+    currentUtterance = utter;
+    currentBtn = btn;
+  }
+
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => toggleDay(btn));
+  });
+</script>
+
+</body>
+</html>

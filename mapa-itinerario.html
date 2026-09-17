@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mapa del itinerario · Berlín 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;900&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" integrity="sha512-puBpdR0798OZvTTbP4A8Ix/l+A4dHDD0DGqYW6RQ+9jxkRFclaxxQb/SJAWZfWAkuyeQUytO7+7N4QKrDh+drA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js" integrity="sha512-BB3hKbKWOc9Ez/TAwyWxNXeoV9c1v6FIeYiBieIWkpLjauysF18NzgR1MBNBXf8/KABdlkX68nAhlwcDFLGPCQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<style>
+  :root{
+    --yellow:#F7D417;
+    --yellow-deep:#E0BC00;
+    --ink:#151812;
+    --ink-soft:#4A4E45;
+    --paper:#F5F3EA;
+    --plate:#1B2A22;
+    --plate-2:#22352A;
+    --red:#C1401F;
+    --blue:#2B5D8C;
+    --grey:#6B7280;
+    --line:#1B2A22;
+    --white:#FFFDF6;
+    --radius-s:2px;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--paper);
+    background-image:radial-gradient(circle at 1px 1px, rgba(27,42,34,0.06) 1px, transparent 0);
+    background-size:18px 18px;
+    color:var(--ink);
+    font-family:'Work Sans', -apple-system, sans-serif;
+    display:flex;
+    justify-content:center;
+    padding:28px 14px 60px;
+    min-height:100vh;
+  }
+  .frame{width:100%; max-width:480px;}
+
+  /* ---- App bar ---- */
+  .appbar{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:18px;
+  }
+  .back-link{
+    display:flex;
+    align-items:center;
+    gap:6px;
+    text-decoration:none;
+    color:var(--ink);
+    font-family:'Archivo',sans-serif;
+    font-weight:700;
+    font-size:13px;
+  }
+  .appbar .tag{
+    font-family:'Archivo',sans-serif;
+    font-weight:700;
+    font-size:12px;
+    letter-spacing:0.04em;
+    background:var(--ink);
+    color:var(--yellow);
+    padding:6px 10px;
+    border-radius:var(--radius-s);
+  }
+
+  /* ---- Hero ---- */
+  .hero{
+    background:var(--ink);
+    border-radius:6px;
+    padding:22px 20px 20px;
+    color:var(--white);
+    position:relative;
+    overflow:hidden;
+    margin-bottom:18px;
+  }
+  .hero::after{
+    content:"";
+    position:absolute;
+    right:-30px; top:-30px;
+    width:140px;height:140px;
+    background:var(--yellow);
+    opacity:0.12;
+    border-radius:50%;
+  }
+  .hero h1{
+    font-family:'Archivo', sans-serif;
+    font-weight:900;
+    font-size:24px;
+    line-height:1.1;
+    margin:0 0 6px;
+  }
+  .hero p{
+    font-size:13px;
+    color:rgba(255,253,246,0.7);
+    margin:0;
+  }
+
+  /* ---- Day filter chips ---- */
+  .filters{
+    display:flex;
+    gap:6px;
+    margin-bottom:14px;
+    flex-wrap:wrap;
+  }
+  .filter-chip{
+    display:flex;
+    align-items:center;
+    gap:6px;
+    padding:7px 11px;
+    border-radius:20px;
+    border:1.5px solid var(--ink);
+    background:var(--white);
+    font-family:'Archivo',sans-serif;
+    font-weight:700;
+    font-size:11.5px;
+    color:var(--ink);
+    cursor:pointer;
+    transition:opacity 0.15s ease;
+  }
+  .filter-chip .dot{
+    width:9px; height:9px;
+    border-radius:50%;
+    flex-shrink:0;
+  }
+  .filter-chip.off{
+    opacity:0.35;
+  }
+
+  /* ---- Map ---- */
+  #map{
+    width:100%;
+    height:440px;
+    border-radius:6px;
+    border:1.5px solid var(--ink);
+    margin-bottom:14px;
+  }
+  .leaflet-popup-content-wrapper{
+    border-radius:4px;
+    font-family:'Work Sans', sans-serif;
+  }
+  .leaflet-popup-content{margin:10px 12px; font-size:13px;}
+  .popup-title{font-family:'Archivo',sans-serif; font-weight:700; font-size:13.5px; margin-bottom:2px;}
+  .popup-time{color:var(--ink-soft); font-size:11.5px;}
+
+  /* Numbered marker */
+  .num-marker{
+    width:26px; height:26px;
+    border-radius:50% 50% 50% 0;
+    transform:rotate(-45deg);
+    display:flex; align-items:center; justify-content:center;
+    border:1.5px solid var(--ink);
+    box-shadow:1px 1px 0 rgba(0,0,0,0.15);
+  }
+  .num-marker span{
+    transform:rotate(45deg);
+    font-family:'Archivo',sans-serif;
+    font-weight:900;
+    font-size:11px;
+    color:var(--ink);
+  }
+  .hotel-marker{
+    width:28px; height:28px;
+    border-radius:50%;
+    background:var(--ink);
+    display:flex; align-items:center; justify-content:center;
+    font-size:14px;
+    border:2px solid var(--yellow);
+  }
+
+  /* ---- Legend ---- */
+  .legend{
+    background:var(--white);
+    border:1.5px solid var(--ink);
+    border-radius:6px;
+    padding:14px 16px;
+    margin-bottom:14px;
+  }
+  .legend-row{
+    display:flex;
+    align-items:center;
+    gap:9px;
+    font-size:12.5px;
+    padding:5px 0;
+  }
+  .legend-row .dot{width:11px; height:11px; border-radius:50%; flex-shrink:0;}
+  .legend-row .lbl{font-weight:600;}
+  .legend-row .desc{color:var(--ink-soft);}
+
+  .foot-note{
+    text-align:center;
+    font-size:11.5px;
+    color:var(--ink-soft);
+    margin-top:6px;
+    line-height:1.5;
+  }
+</style>
+</head>
+<body>
+
+<div class="frame">
+
+  <div class="appbar">
+    <a class="back-link" href="berlin-panel.html">← Panel</a>
+    <span class="tag">MAPA</span>
+  </div>
+
+  <div class="hero">
+    <h1>Mapa del itinerario</h1>
+    <p>Los 15 puntos del recorrido de 3 días, agrupados por color. Toca un pin para ver el nombre y la hora.</p>
+  </div>
+
+  <div class="filters">
+    <button class="filter-chip" data-day="dia1"><span class="dot" style="background:#F7D417"></span>Día 1</button>
+    <button class="filter-chip" data-day="dia2"><span class="dot" style="background:#C1401F"></span>Día 2</button>
+    <button class="filter-chip" data-day="dia3"><span class="dot" style="background:#2B5D8C"></span>Día 3</button>
+    <button class="filter-chip" data-day="extra"><span class="dot" style="background:#6B7280"></span>Extra</button>
+  </div>
+
+  <div id="map"></div>
+
+  <div class="legend">
+    <div class="legend-row"><span class="dot" style="background:#F7D417"></span><span class="lbl">Día 1</span><span class="desc">· Gobierno, memoria y Potsdamer Platz</span></div>
+    <div class="legend-row"><span class="dot" style="background:#C1401F"></span><span class="lbl">Día 2</span><span class="desc">· Unter den Linden e Isla de los Museos</span></div>
+    <div class="legend-row"><span class="dot" style="background:#2B5D8C"></span><span class="lbl">Día 3</span><span class="desc">· El Muro y el este de Berlín</span></div>
+    <div class="legend-row"><span class="dot" style="background:#6B7280"></span><span class="lbl">Extra</span><span class="desc">· Sachsenhausen, jornada aparte</span></div>
+  </div>
+
+  <div class="foot-note">Las líneas conectan los puntos en el orden sugerido, en línea recta — no son rutas reales a pie o en metro. Usa el botón "Cómo llegar" de cada ficha para la ruta exacta.</div>
+
+</div>
+
+<script>
+  const DAY_COLORS = {
+    dia1: '#F7D417',
+    dia2: '#C1401F',
+    dia3: '#2B5D8C',
+    extra: '#6B7280'
+  };
+
+  const HOTEL = { name: 'Hotel Titanic Comfort Mitte', lat: 52.5102512, lng: 13.4040353 };
+
+  const DAYS = {
+    dia1: [
+      { name: 'Puerta de Brandeburgo', time: '9:00', lat: 52.5162746, lng: 13.3777040 },
+      { name: 'Memorial del Holocausto', time: '9:45', lat: 52.5139474, lng: 13.3787126 },
+      { name: 'Reichstag', time: '10:30', lat: 52.5186202, lng: 13.3761871 },
+      { name: 'Tiergarten', time: '12:00', lat: 52.5141516, lng: 13.3591634 },
+      { name: 'Potsdamer Platz', time: '14:00', lat: 52.5092312, lng: 13.3761053 },
+      { name: 'Mall of Berlin', time: '16:00', lat: 52.5105246, lng: 13.3811046 }
+    ],
+    dia2: [
+      { name: 'Checkpoint Charlie', time: '9:30', lat: 52.5074434, lng: 13.3903913 },
+      { name: 'Gendarmenmarkt', time: '10:30', lat: 52.5132122, lng: 13.3925122 },
+      { name: 'Bebelplatz', time: '11:15', lat: 52.5161425, lng: 13.3944344 },
+      { name: 'Isla de los Museos', time: '12:00', lat: 52.5169328, lng: 13.4018996 },
+      { name: 'Catedral de Berlín', time: '15:00', lat: 52.5190608, lng: 13.4010780 },
+      { name: 'Torre de TV / Alexanderplatz', time: '17:30', lat: 52.5208150, lng: 13.4094190 }
+    ],
+    dia3: [
+      { name: 'Muro de Berlín (Bernauer Str.)', time: '9:30', lat: 52.5350521, lng: 13.3901898 },
+      { name: 'East Side Gallery', time: '12:00', lat: 52.5050224, lng: 13.4396953 },
+      { name: 'Teufelsberg (opcional)', time: '15:30', lat: 52.4971524, lng: 13.2396787 }
+    ],
+    extra: [
+      { name: 'Sachsenhausen', time: '', lat: 52.7659036, lng: 13.2642223 }
+    ]
+  };
+
+  const map = L.map('map', { scrollWheelZoom: false }).setView([52.514, 13.390], 12);
+
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+    maxZoom: 19
+  }).addTo(map);
+
+  // Marcador del hotel, siempre visible
+  const hotelIcon = L.divIcon({
+    className: '',
+    html: '<div class="hotel-marker">🏨</div>',
+    iconSize: [28, 28],
+    iconAnchor: [14, 14]
+  });
+  L.marker([HOTEL.lat, HOTEL.lng], { icon: hotelIcon })
+    .addTo(map)
+    .bindPopup('<div class="popup-title">' + HOTEL.name + '</div><div class="popup-time">Alojamiento</div>');
+
+  const dayLayers = {};
+  const allBounds = [[HOTEL.lat, HOTEL.lng]];
+
+  Object.keys(DAYS).forEach(dayKey => {
+    const color = DAY_COLORS[dayKey];
+    const points = DAYS[dayKey];
+    const layerGroup = L.layerGroup().addTo(map);
+
+    const latlngs = points.map(p => [p.lat, p.lng]);
+    L.polyline(latlngs, { color: color, weight: 3, dashArray: '2 8', opacity: 0.85 }).addTo(layerGroup);
+
+    points.forEach((p, idx) => {
+      const icon = L.divIcon({
+        className: '',
+        html: '<div class="num-marker" style="background:' + color + '"><span>' + (idx + 1) + '</span></div>',
+        iconSize: [26, 26],
+        iconAnchor: [13, 26]
+      });
+      const timeHtml = p.time ? '<div class="popup-time">' + p.time + '</div>' : '';
+      L.marker([p.lat, p.lng], { icon: icon })
+        .addTo(layerGroup)
+        .bindPopup('<div class="popup-title">' + p.name + '</div>' + timeHtml);
+      allBounds.push([p.lat, p.lng]);
+    });
+
+    dayLayers[dayKey] = layerGroup;
+  });
+
+  map.fitBounds(allBounds, { padding: [24, 24] });
+
+  document.querySelectorAll('.filter-chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      const day = chip.dataset.day;
+      const layer = dayLayers[day];
+      if (map.hasLayer(layer)) {
+        map.removeLayer(layer);
+        chip.classList.add('off');
+      } else {
+        map.addLayer(layer);
+        chip.classList.remove('off');
+      }
+    });
+  });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BER → Titanic Comfort Mitte</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;900&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --yellow:#F7D417;
+    --yellow-deep:#E0BC00;
+    --ink:#151812;
+    --ink-soft:#4A4E45;
+    --paper:#F5F3EA;
+    --plate:#1B2A22;
+    --plate-2:#22352A;
+    --red:#C1401F;
+    --line:#1B2A22;
+    --white:#FFFDF6;
+    --radius-s:2px;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--paper);
+    background-image:
+      radial-gradient(circle at 1px 1px, rgba(27,42,34,0.06) 1px, transparent 0);
+    background-size: 18px 18px;
+    color:var(--ink);
+    font-family:'Work Sans', -apple-system, sans-serif;
+    display:flex;
+    justify-content:center;
+    padding:28px 14px 60px;
+    min-height:100vh;
+  }
+  .frame{
+    width:100%;
+    max-width:440px;
+  }
+
+  /* ---- App bar ---- */
+  .appbar{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:22px;
+  }
+  .appbar .tag{
+    font-family:'Archivo',sans-serif;
+    font-weight:700;
+    font-size:12px;
+    letter-spacing:0.04em;
+    background:var(--ink);
+    color:var(--yellow);
+    padding:6px 10px;
+    border-radius:var(--radius-s);
+  }
+  .appbar .day{
+    font-size:13px;
+    color:var(--ink-soft);
+    font-weight:500;
+  }
+
+  /* ---- Hero route strip ---- */
+  .hero{
+    background:var(--ink);
+    border-radius:6px;
+    padding:22px 20px 20px;
+    color:var(--white);
+    position:relative;
+    overflow:hidden;
+    margin-bottom:18px;
+  }
+  .hero::after{
+    content:"";
+    position:absolute;
+    right:-30px; top:-30px;
+    width:140px;height:140px;
+    background:var(--yellow);
+    opacity:0.12;
+    border-radius:50%;
+  }
+  .hero h1{
+    font-family:'Archivo', sans-serif;
+    font-weight:900;
+    font-size:26px;
+    line-height:1.08;
+    margin:0 0 14px;
+    max-width:88%;
+  }
+  .route-strip{
+    display:flex;
+    align-items:center;
+    gap:0;
+  }
+  .stop-badge{
+    font-family:'Archivo', sans-serif;
+    font-weight:900;
+    font-size:14px;
+    background:var(--yellow);
+    color:var(--ink);
+    padding:6px 10px;
+    border-radius:var(--radius-s);
+    white-space:nowrap;
+  }
+  .stop-badge.end{
+    background:transparent;
+    border:1.5px solid var(--yellow);
+    color:var(--yellow);
+  }
+  .route-strip .dashes{
+    flex:1;
+    height:0;
+    border-top:2px dashed rgba(247,212,23,0.55);
+    margin:0 8px;
+  }
+  .hero .meta{
+    margin-top:14px;
+    font-size:13px;
+    color:rgba(255,253,246,0.7);
+    display:flex;
+    gap:14px;
+  }
+
+  /* ---- Tabs ---- */
+  .tabs{
+    display:flex;
+    gap:6px;
+    margin-bottom:16px;
+  }
+  .tab-btn{
+    flex:1;
+    font-family:'Archivo', sans-serif;
+    font-weight:700;
+    font-size:12.5px;
+    letter-spacing:0.01em;
+    padding:11px 4px;
+    border:1.5px solid var(--ink);
+    background:transparent;
+    color:var(--ink);
+    border-radius:var(--radius-s);
+    cursor:pointer;
+    transition:background 0.15s ease, color 0.15s ease;
+  }
+  .tab-btn.active{
+    background:var(--ink);
+    color:var(--yellow);
+  }
+
+  .panel{display:none;}
+  .panel.active{display:block; animation:fade .25s ease;}
+  @keyframes fade{from{opacity:0; transform:translateY(4px);} to{opacity:1; transform:translateY(0);}}
+
+  /* ---- Metro line ---- */
+  .metro{
+    background:var(--white);
+    border:1.5px solid var(--ink);
+    border-radius:6px;
+    padding:20px 18px 20px 0;
+    margin-bottom:16px;
+  }
+  .metro-head{
+    display:flex;
+    justify-content:space-between;
+    align-items:baseline;
+    padding:0 18px;
+    margin-bottom:16px;
+  }
+  .metro-head .label{
+    font-family:'Archivo',sans-serif;
+    font-weight:700;
+    font-size:13px;
+    color:var(--ink-soft);
+  }
+  .metro-head .time{
+    font-family:'Archivo',sans-serif;
+    font-weight:900;
+    font-size:20px;
+  }
+  .metro-head .time span{
+    font-size:12px;
+    font-weight:500;
+    color:var(--ink-soft);
+  }
+
+  .maps-btn{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:7px;
+    text-decoration:none;
+    margin:0 18px 18px;
+    padding:9px 12px;
+    border:1.5px solid var(--ink);
+    border-radius:20px;
+    font-family:'Archivo',sans-serif;
+    font-weight:700;
+    font-size:12.5px;
+    color:var(--ink);
+    transition:background 0.15s ease, color 0.15s ease;
+  }
+  .maps-btn:hover{background:var(--ink); color:var(--yellow);}
+  .maps-btn svg{width:14px; height:14px; flex-shrink:0;}
+
+  .station{
+    position:relative;
+    padding:0 18px 0 46px;
+    padding-bottom:22px;
+  }
+  .station:last-child{padding-bottom:0;}
+  .station::before{ /* vertical line */
+    content:"";
+    position:absolute;
+    left:24px; top:6px; bottom:-2px;
+    width:3px;
+    background:var(--line);
+  }
+  .station:last-child::before{display:none;}
+  .station .dot{
+    position:absolute;
+    left:18px; top:2px;
+    width:15px; height:15px;
+    border-radius:50%;
+    background:var(--white);
+    border:3px solid var(--line);
+  }
+  .station.transfer .dot{
+    background:var(--red);
+    border-color:var(--red);
+  }
+  .station .line-tag{
+    display:inline-block;
+    font-family:'Archivo',sans-serif;
+    font-weight:900;
+    font-size:11.5px;
+    background:var(--yellow);
+    color:var(--ink);
+    padding:2px 7px;
+    border-radius:2px;
+    margin-right:6px;
+    vertical-align:middle;
+  }
+  .station .stitle{
+    font-family:'Archivo',sans-serif;
+    font-weight:700;
+    font-size:15px;
+  }
+  .station .sdesc{
+    font-size:13px;
+    color:var(--ink-soft);
+    margin-top:3px;
+    line-height:1.45;
+  }
+
+  /* ---- Info card (taxi / coche) ---- */
+  .info-card{
+    background:var(--white);
+    border:1.5px solid var(--ink);
+    border-radius:6px;
+    padding:20px 18px;
+    margin-bottom:16px;
+  }
+  .info-card .big{
+    font-family:'Archivo',sans-serif;
+    font-weight:900;
+    font-size:30px;
+    display:flex;
+    align-items:baseline;
+    gap:8px;
+  }
+  .info-card .big span{
+    font-family:'Work Sans',sans-serif;
+    font-weight:500;
+    font-size:13px;
+    color:var(--ink-soft);
+  }
+  .info-card p{
+    font-size:13.5px;
+    line-height:1.55;
+    color:var(--ink-soft);
+    margin:10px 0 0;
+  }
+  .chip-row{
+    display:flex;
+    gap:8px;
+    margin-top:14px;
+    flex-wrap:wrap;
+  }
+  .chip{
+    font-size:12px;
+    font-weight:600;
+    border:1.3px solid var(--ink);
+    padding:5px 10px;
+    border-radius:20px;
+  }
+
+  /* ---- Hotel signage plate ---- */
+  .plate{
+    background:var(--plate);
+    background-image:linear-gradient(160deg, var(--plate) 0%, var(--plate-2) 100%);
+    border-radius:6px;
+    padding:20px 20px 18px;
+    color:var(--white);
+  }
+  .plate .eyebrow{
+    font-size:12px;
+    color:rgba(255,253,246,0.6);
+    margin-bottom:2px;
+  }
+  .plate h2{
+    font-family:'Archivo',sans-serif;
+    font-weight:900;
+    font-size:20px;
+    margin:0 0 12px;
+  }
+  .plate-row{
+    display:flex;
+    justify-content:space-between;
+    padding:9px 0;
+    border-top:1px solid rgba(255,253,246,0.15);
+    font-size:13px;
+  }
+  .plate-row:first-of-type{border-top:1px solid rgba(255,253,246,0.15);}
+  .plate-row .k{color:rgba(255,253,246,0.55);}
+  .plate-row .v{font-weight:600; text-align:right;}
+
+  /* ---- Tip callout ---- */
+  .tip{
+    display:flex;
+    gap:10px;
+    background:rgba(247,212,23,0.18);
+    border:1.5px dashed var(--yellow-deep);
+    border-radius:6px;
+    padding:14px 16px;
+    margin-bottom:16px;
+  }
+  .tip .bulb{font-size:18px; line-height:1;}
+  .tip .txt{font-size:13px; line-height:1.5; color:var(--ink);}
+  .tip .txt strong{font-family:'Archivo',sans-serif;}
+
+  /* ---- Video source button ---- */
+  .video-link{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    text-decoration:none;
+    background:var(--ink);
+    color:var(--white);
+    border-radius:6px;
+    padding:12px 14px;
+    margin-bottom:16px;
+    transition:background 0.15s ease;
+  }
+  .video-link:hover{background:#000;}
+  .video-link .play{
+    flex-shrink:0;
+    width:32px; height:32px;
+    border-radius:50%;
+    background:var(--yellow);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+  .video-link .play svg{width:12px; height:12px;}
+  .video-link .vtxt{flex:1;}
+  .video-link .vtitle{
+    font-family:'Archivo',sans-serif;
+    font-weight:700;
+    font-size:13.5px;
+  }
+  .video-link .vsub{
+    font-size:11.5px;
+    color:rgba(255,253,246,0.6);
+    margin-top:1px;
+  }
+  .video-link .arrow{
+    font-size:16px;
+    color:var(--yellow);
+  }
+
+  .foot-note{
+    text-align:center;
+    font-size:11.5px;
+    color:var(--ink-soft);
+    margin-top:18px;
+    line-height:1.5;
+  }
+
+  @media (max-width:380px){
+    .hero h1{font-size:22px;}
+  }
+</style>
+</head>
+<body>
+
+<div class="frame">
+
+  <div class="appbar">
+    <span class="tag">BERLIN · TRASLADOS</span>
+    <span class="day">Día 1</span>
+  </div>
+
+  <div class="tabs">
+    <button class="tab-btn active" data-tab="ida">Ida · Aeropuerto → Hotel</button>
+    <button class="tab-btn" data-tab="vuelta">Vuelta · Hotel → Aeropuerto</button>
+  </div>
+
+  <!-- PANEL: IDA (aeropuerto → hotel) -->
+  <div class="panel active" id="ida">
+
+    <div class="hero">
+      <h1>Del aeropuerto al hotel</h1>
+      <div class="route-strip">
+        <span class="stop-badge">BER</span>
+        <span class="dashes"></span>
+        <span class="stop-badge end">Titanic Mitte</span>
+      </div>
+      <div class="meta">
+        <span>🚆 ~55 min en transporte público</span>
+      </div>
+    </div>
+
+    <div class="metro">
+      <div class="metro-head">
+        <span class="label">RUTA RECOMENDADA</span>
+        <span class="time">~55<span> min</span></span>
+      </div>
+
+      <a class="maps-btn" href="https://www.google.com/maps/dir/?api=1&origin=Berlin+Brandenburg+Airport+(BER)&destination=Elisabeth-Mara-Stra%C3%9Fe+4,+10117+Berlin&travelmode=transit" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        Cómo llegar con Google Maps
+      </a>
+
+      <div class="station">
+        <span class="dot"></span>
+        <span class="stitle">Flughafen BER · Terminal 1-2</span>
+        <div class="sdesc">Estación de tren en el sótano (nivel U2). Compra un billete zona <strong>ABC</strong> (4–5 €) en las máquinas antes de bajar al andén.</div>
+      </div>
+
+      <div class="station transfer">
+        <span class="dot"></span>
+        <span class="line-tag">S9</span>
+        <span class="stitle">Dirección Alexanderplatz</span>
+        <div class="sdesc">Sale cada 20 min, sin trasbordos. Trayecto directo de ~30–35 min.</div>
+      </div>
+
+      <div class="station transfer">
+        <span class="dot"></span>
+        <span class="line-tag">U2</span>
+        <span class="stitle">Cambio en Alexanderplatz</span>
+        <div class="sdesc">Dirección <strong>Ruhleben</strong>. Solo 2 paradas hasta Spittelmarkt (~4 min).</div>
+      </div>
+
+      <div class="station">
+        <span class="dot"></span>
+        <span class="stitle">Spittelmarkt → a pie</span>
+        <div class="sdesc">Salida de la estación, unos 200–300 m (3 min andando) hasta el hotel.</div>
+      </div>
+    </div>
+
+    <div class="tip">
+      <span class="bulb">💡</span>
+      <span class="txt"><strong>Truco:</strong> mejor que el billete sencillo, compra el <strong>billete de 24h</strong> en la máquina — con el mismo precio de partida te sirve para todo el transporte público de la ciudad durante ese tiempo.</span>
+    </div>
+
+    <a class="video-link" href="https://www.tiktok.com/@juandaexplora/video/7656536915474386199" target="_blank" rel="noopener">
+      <span class="play">
+        <svg viewBox="0 0 24 24" fill="#151812"><path d="M8 5v14l11-7z"/></svg>
+      </span>
+      <span class="vtxt">
+        <div class="vtitle">Ver el vídeo original</div>
+        <div class="vsub">@juandaexplora en TikTok</div>
+      </span>
+      <span class="arrow">↗</span>
+    </a>
+
+  </div>
+
+  <!-- PANEL: VUELTA (hotel → aeropuerto) -->
+  <div class="panel" id="vuelta">
+
+    <div class="hero">
+      <h1>Del hotel al aeropuerto</h1>
+      <div class="route-strip">
+        <span class="stop-badge">Titanic Mitte</span>
+        <span class="dashes"></span>
+        <span class="stop-badge end">BER</span>
+      </div>
+      <div class="meta">
+        <span>🚆 ~55 min en transporte público</span>
+      </div>
+    </div>
+
+    <div class="metro">
+      <div class="metro-head">
+        <span class="label">RUTA RECOMENDADA</span>
+        <span class="time">~55<span> min</span></span>
+      </div>
+
+      <a class="maps-btn" href="https://www.google.com/maps/dir/?api=1&origin=Elisabeth-Mara-Stra%C3%9Fe+4,+10117+Berlin&destination=Berlin+Brandenburg+Airport+(BER)&travelmode=transit" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        Cómo llegar con Google Maps
+      </a>
+
+      <div class="station">
+        <span class="dot"></span>
+        <span class="stitle">Hotel Titanic Comfort Mitte</span>
+        <div class="sdesc">Camina hasta la estación Spittelmarkt: unos 200–300 m (3 min a pie).</div>
+      </div>
+
+      <div class="station transfer">
+        <span class="dot"></span>
+        <span class="line-tag">U2</span>
+        <span class="stitle">Dirección Pankow</span>
+        <div class="sdesc">Sube en Spittelmarkt, sentido contrario al de la ida. Solo 2 paradas hasta Alexanderplatz (~4 min).</div>
+      </div>
+
+      <div class="station transfer">
+        <span class="dot"></span>
+        <span class="line-tag">S9</span>
+        <span class="stitle">Dirección Flughafen BER</span>
+        <div class="sdesc">Cambia en Alexanderplatz. Sale cada 20 min, trayecto directo de ~30–35 min sin trasbordos.</div>
+      </div>
+
+      <div class="station">
+        <span class="dot"></span>
+        <span class="stitle">Flughafen BER · Terminal 1-2</span>
+        <div class="sdesc">La estación conecta directo con ambas terminales. Sigue los carteles de "Abflug / Departures".</div>
+      </div>
+    </div>
+
+    <div class="tip">
+      <span class="bulb">💡</span>
+      <span class="txt"><strong>Truco:</strong> comprueba con antelación si tu vuelo sale de la <strong>Terminal 1 o 2</strong> y llega con margen — se recomienda estar en el aeropuerto 2-3h antes si es un vuelo internacional.</span>
+    </div>
+
+  </div>
+
+  <div class="plate">
+    <div class="eyebrow">DESTINO</div>
+    <h2>Titanic Comfort Mitte</h2>
+    <div class="plate-row">
+      <span class="k">Dirección</span>
+      <span class="v">Elisabeth-Mara-Str. 4<br>10117 Berlín</span>
+    </div>
+    <div class="plate-row">
+      <span class="k">Teléfono</span>
+      <span class="v">+49 30 7677 1870</span>
+    </div>
+    <div class="plate-row">
+      <span class="k">Check-in</span>
+      <span class="v">14:00 – 00:00</span>
+    </div>
+    <div class="plate-row">
+      <span class="k">Check-out</span>
+      <span class="v">Hasta las 11:00</span>
+    </div>
+  </div>
+
+  <div class="foot-note">Metro Spittelmarkt (U2) a 3 min a pie del hotel · Alexanderplatz a 18 min andando</div>
+
+</div>
+
+<script>
+  document.querySelectorAll('.tab-btn').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+      document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById(btn.dataset.tab).classList.add('active');
+    });
+  });
+</script>
+
+</body>
+</html>

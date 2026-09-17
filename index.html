@@ -1,233 +1,304 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Guía del Oktoberfest en Berlín (9-13 Octubre 2026)</title>
-    <style>
-        :root {
-            --primary-color: #0d3b66;
-            --accent-color: #f4a261;
-            --btn-color: #e63946;
-            --bg-color: #faf8f5;
-            --card-bg: #ffffff;
-            --text-color: #2c3e50;
-            --subtext-color: #718096;
-            --badge-bg: #ebf8ff;
-            --badge-text: #2b6cb0;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Berlín 2026 · Panel del viaje</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;900&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --yellow:#F7D417;
+    --yellow-deep:#E0BC00;
+    --ink:#151812;
+    --ink-soft:#4A4E45;
+    --paper:#F5F3EA;
+    --plate:#1B2A22;
+    --plate-2:#22352A;
+    --red:#C1401F;
+    --line:#1B2A22;
+    --white:#FFFDF6;
+    --radius-s:2px;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--paper);
+    background-image:radial-gradient(circle at 1px 1px, rgba(27,42,34,0.06) 1px, transparent 0);
+    background-size:18px 18px;
+    color:var(--ink);
+    font-family:'Work Sans', -apple-system, sans-serif;
+    display:flex;
+    justify-content:center;
+    padding:28px 14px 60px;
+    min-height:100vh;
+  }
+  .frame{width:100%; max-width:440px;}
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+  /* ---- App bar ---- */
+  .appbar{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:22px;
+  }
+  .appbar .tag{
+    font-family:'Archivo',sans-serif;
+    font-weight:700;
+    font-size:12px;
+    letter-spacing:0.04em;
+    background:var(--ink);
+    color:var(--yellow);
+    padding:6px 10px;
+    border-radius:var(--radius-s);
+  }
+  .appbar .day{
+    font-size:13px;
+    color:var(--ink-soft);
+    font-weight:500;
+  }
 
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            line-height: 1.6;
-            padding: 20px 15px;
-        }
+  /* ---- Hero ---- */
+  .hero{
+    background:var(--ink);
+    border-radius:6px;
+    padding:26px 22px 22px;
+    color:var(--white);
+    position:relative;
+    overflow:hidden;
+    margin-bottom:24px;
+  }
+  .hero::after{
+    content:"";
+    position:absolute;
+    right:-34px; top:-34px;
+    width:150px; height:150px;
+    background:var(--yellow);
+    opacity:0.12;
+    border-radius:50%;
+  }
+  .hero .eyebrow{
+    font-size:12.5px;
+    color:rgba(255,253,246,0.6);
+    margin-bottom:6px;
+  }
+  .hero h1{
+    font-family:'Archivo', sans-serif;
+    font-weight:900;
+    font-size:34px;
+    line-height:1;
+    margin:0 0 12px;
+  }
+  .hero .dates{
+    display:inline-flex;
+    align-items:center;
+    gap:7px;
+    background:var(--yellow);
+    color:var(--ink);
+    font-family:'Archivo',sans-serif;
+    font-weight:900;
+    font-size:13px;
+    padding:6px 11px;
+    border-radius:var(--radius-s);
+  }
 
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-        }
+  /* ---- Section label ---- */
+  .section-label{
+    display:flex;
+    align-items:baseline;
+    gap:8px;
+    margin:26px 0 12px;
+  }
+  .section-label .num{
+    font-family:'Archivo',sans-serif;
+    font-weight:900;
+    font-size:13px;
+    color:var(--ink-soft);
+  }
+  .section-label h2{
+    font-family:'Archivo',sans-serif;
+    font-weight:700;
+    font-size:14px;
+    letter-spacing:0.02em;
+    margin:0;
+  }
+  .section-label .rule{
+    flex:1;
+    height:1.5px;
+    background:var(--ink);
+    opacity:0.12;
+  }
 
-        /* Banner Header */
-        .header-banner {
-            background-color: var(--primary-color);
-            color: #ffffff;
-            padding: 30px 20px;
-            text-align: center;
-            border-radius: 12px;
-            margin-bottom: 20px;
-            border-bottom: 5px solid var(--accent-color);
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-        }
+  /* ---- Hub card (link to a section) ---- */
+  .hub-card{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    text-decoration:none;
+    color:var(--ink);
+    background:var(--white);
+    border:1.5px solid var(--ink);
+    border-radius:6px;
+    padding:16px;
+    margin-bottom:12px;
+    transition:transform 0.15s ease, box-shadow 0.15s ease;
+  }
+  .hub-card:hover{
+    transform:translateY(-2px);
+    box-shadow:3px 4px 0 var(--ink);
+  }
+  .hub-card .icon{
+    flex-shrink:0;
+    width:46px; height:46px;
+    border-radius:50%;
+    background:var(--yellow);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:20px;
+  }
+  .hub-card .body{flex:1; min-width:0;}
+  .hub-card .ctitle{
+    font-family:'Archivo',sans-serif;
+    font-weight:700;
+    font-size:15.5px;
+    margin-bottom:2px;
+  }
+  .hub-card .cdesc{
+    font-size:12.5px;
+    color:var(--ink-soft);
+    line-height:1.4;
+  }
+  .hub-card .arrow{
+    flex-shrink:0;
+    font-size:18px;
+    color:var(--ink-soft);
+  }
 
-        .header-banner h1 {
-            font-size: 2rem;
-            letter-spacing: 0.5px;
-            margin-bottom: 8px;
-            font-weight: 700;
-        }
+  /* ---- Placeholder card (future section) ---- */
+  .add-card{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    border:1.5px dashed rgba(21,24,18,0.35);
+    border-radius:6px;
+    padding:16px;
+    margin-bottom:12px;
+    color:var(--ink-soft);
+  }
+  .add-card .icon{
+    flex-shrink:0;
+    width:46px; height:46px;
+    border-radius:50%;
+    border:1.5px dashed rgba(21,24,18,0.35);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:18px;
+  }
+  .add-card .ctitle{
+    font-family:'Archivo',sans-serif;
+    font-weight:700;
+    font-size:14px;
+    color:var(--ink-soft);
+  }
+  .add-card .cdesc{font-size:12px; margin-top:2px;}
 
-        .header-banner p {
-            font-size: 1.1rem;
-            color: #e0e6ed;
-            font-style: italic;
-        }
-
-        /* Date Highlight Box */
-        .date-box {
-            background-color: var(--accent-color);
-            color: #1d3557;
-            text-align: center;
-            padding: 12px;
-            border-radius: 8px;
-            font-weight: bold;
-            font-size: 1.1rem;
-            margin-bottom: 25px;
-            letter-spacing: 0.5px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-        }
-
-        .intro {
-            background-color: var(--card-bg);
-            border-left: 5px solid var(--accent-color);
-            padding: 15px 20px;
-            margin-bottom: 25px;
-            border-radius: 0 8px 8px 0;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.03);
-            font-size: 1rem;
-            color: #4a5568;
-        }
-
-        /* Place Cards */
-        .card {
-            background-color: var(--card-bg);
-            border: 1px solid #e2e8f0;
-            border-radius: 10px;
-            margin-bottom: 20px;
-            padding: 20px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.02);
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-        }
-
-        .card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 12px rgba(0,0,0,0.05);
-        }
-
-        .badge {
-            display: inline-block;
-            background-color: var(--badge-bg);
-            color: var(--badge-text);
-            font-size: 0.85rem;
-            font-weight: bold;
-            padding: 4px 10px;
-            border-radius: 6px;
-            margin-bottom: 10px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .card-title {
-            font-size: 1.4rem;
-            font-weight: bold;
-            color: var(--primary-color);
-            margin-bottom: 6px;
-        }
-
-        .card-location {
-            font-size: 0.95rem;
-            color: var(--subtext-color);
-            margin-bottom: 12px;
-            padding-bottom: 10px;
-            border-bottom: 1px solid #edf2f7;
-        }
-
-        .card-body {
-            font-size: 1rem;
-            color: #2d3748;
-            margin-bottom: 16px;
-        }
-
-        /* Buttons */
-        .btn-link {
-            display: inline-block;
-            background-color: var(--btn-color);
-            color: #ffffff !important;
-            text-decoration: none;
-            padding: 10px 18px;
-            font-size: 0.95rem;
-            font-weight: bold;
-            border-radius: 6px;
-            text-align: center;
-            transition: background-color 0.2s ease;
-        }
-
-        .btn-link:hover {
-            background-color: #d62828;
-        }
-
-        .footer {
-            margin-top: 35px;
-            text-align: center;
-            font-size: 0.9rem;
-            color: #a0aec0;
-            border-top: 1px solid #e2e8f0;
-            padding-top: 15px;
-        }
-    </style>
+  .foot-note{
+    text-align:center;
+    font-size:11.5px;
+    color:var(--ink-soft);
+    margin-top:22px;
+    line-height:1.5;
+  }
+</style>
 </head>
 <body>
 
-    <div class="container">
-        <div class="header-banner">
-            <h1>GUÍA DEL OKTOBERFEST EN BERLÍN CIUDAD</h1>
-            <p>Los mejores lugares dentro de la ciudad para celebrar la fiesta bávara</p>
-        </div>
+<div class="frame">
 
-        <div class="date-box">
-            📅 FECHAS DEL VIAJE: DEL 9 AL 13 DE OCTUBRE DE 2026
-        </div>
+  <div class="appbar">
+    <span class="tag">BERLIN · MI VIAJE</span>
+    <span class="day">2026</span>
+  </div>
 
-        <div class="intro">
-            Guía interactiva adaptada exclusivamente para la ciudad de Berlín para tu viaje del <strong>9 al 13 de octubre de 2026</strong>. Haz clic en los botones para abrir la ubicación exacta de cada lugar en Google Maps.
-        </div>
+  <div class="hero">
+    <div class="eyebrow">PANEL PRINCIPAL</div>
+    <h1>Berlín</h1>
+    <span class="dates">📅 9 – 13 OCT 2026</span>
+  </div>
 
-        <!-- Lugar 1 -->
-        <div class="card">
-            <span class="badge">Mitte • Tradición Bávara</span>
-            <h2 class="card-title">Hofbräu Wirtshaus Berlin</h2>
-            <div class="card-location">📍 <strong>Dirección:</strong> Karl-Liebknecht-Straße 30, Mitte (Berlín Centro)</div>
-            <p class="card-body">
-                Gran capacidad, música en vivo de polka, trajes tradicionales y jarras de un litro (<i>Maß</i>) de cerveza oficial de Oktoberfest. Es muy recomendable reservar mesa con antelación para el fin de semana del 9 al 11 de octubre.
-            </p>
-            <a class="btn-link" href="https://maps.google.com/?q=Hofbrau+Wirtshaus+Berlin+Karl-Liebknecht-Strasse+30" target="_blank" rel="noopener">Ver en Google Maps ➔</a>
-        </div>
+  <div class="section-label">
+    <span class="num">01</span>
+    <h2>TRASLADOS</h2>
+    <span class="rule"></span>
+  </div>
 
-        <!-- Lugar 2 -->
-        <div class="card">
-            <span class="badge">Potsdamer Platz • Gastronomía y Tendencia</span>
-            <h2 class="card-title">Manifesto Market</h2>
-            <div class="card-location">📍 <strong>Dirección:</strong> Alte Potsdamer Straße 7, Potsdamer Platz (Mitte)</div>
-            <p class="card-body">
-                Organiza eventos especiales dedicados al Oktoberfest en pleno centro de la ciudad con sorpresas, amplia oferta gastronómica, cerveza y un ambiente vibrante y urbano.
-            </p>
-            <a class="btn-link" href="https://maps.google.com/?q=Manifesto+Market+Alte+Potsdamer+Strasse+7" target="_blank" rel="noopener">Ver en Google Maps ➔</a>
-        </div>
+  <a class="hub-card" href="traslado-aeropuerto-hotel.html">
+    <span class="icon">🚆</span>
+    <span class="body">
+      <div class="ctitle">Aeropuerto ↔ Hotel</div>
+      <div class="cdesc">Tren + metro, ida y vuelta, con enlace directo a Google Maps</div>
+    </span>
+    <span class="arrow">›</span>
+  </a>
 
-        <!-- Lugar 3 -->
-        <div class="card">
-            <span class="badge">Spandau (Berlín) • Gran Carpa Festiva</span>
-            <h2 class="card-title">Oktoberfest an der Zitadelle Spandau</h2>
-            <div class="card-location">📍 <strong>Dirección:</strong> Am Juliusturm 64, Spandau (Berlín)</div>
-            <p class="card-body">
-                El festival de Oktoberfest más grande dentro del distrito urbano de Berlín, junto a la icónica Ciudadela. Cuenta con una carpa gigante con capacidad para más de 2.000 personas, música en vivo, DJs y especialidades bávaras. Operativo las noches del viernes 9 y sábado 10 de octubre.
-            </p>
-            <a class="btn-link" href="https://maps.google.com/?q=Zitadelle+Spandau+Am+Juliusturm+64+Berlin" target="_blank" rel="noopener">Ver en Google Maps ➔</a>
-        </div>
+  <div class="section-label">
+    <span class="num">02</span>
+    <h2>EVENTOS</h2>
+    <span class="rule"></span>
+  </div>
 
-        <!-- Lugar 4 -->
-        <div class="card">
-            <span class="badge">Mitte • Emblemático al Aire Libre</span>
-            <h2 class="card-title">Oktoberfest am Alexanderplatz</h2>
-            <div class="card-location">📍 <strong>Dirección:</strong> Alexanderplatz, Mitte (Berlín Centro)</div>
-            <p class="card-body">
-                Instalación festiva en el corazón de Berlín con ambiente de carpa, terraza de cerveza (<i>Paulaner Biergarten</i>), música en directo, elección de trajes tradicionales y puestos de comida bávara justo frente a la torre TV Tower.
-            </p>
-            <a class="btn-link" href="https://maps.google.com/?q=Alexanderplatz+Berlin" target="_blank" rel="noopener">Ver en Google Maps ➔</a>
-        </div>
+  <a class="hub-card" href="oktoberfest-berlin.html">
+    <span class="icon">🍺</span>
+    <span class="body">
+      <div class="ctitle">Guía del Oktoberfest</div>
+      <div class="cdesc">4 sitios dentro de Berlín para vivir la fiesta bávara</div>
+    </span>
+    <span class="arrow">›</span>
+  </a>
 
-        <div class="footer">
-            Guía de viaje para el Oktoberfest en Berlín Ciudad (9 - 13 de Octubre de 2026) • Diseñada para GitHub Pages / HTML Web.
-        </div>
-    </div>
+  <div class="section-label">
+    <span class="num">03</span>
+    <h2>LUGARES DE INTERÉS</h2>
+    <span class="rule"></span>
+  </div>
+
+  <a class="hub-card" href="lugares-interes.html">
+    <span class="icon">🏛️</span>
+    <span class="body">
+      <div class="ctitle">Qué visitar en Berlín</div>
+      <div class="cdesc">Ficha de cada sitio con historia, curiosidades y audio</div>
+    </span>
+    <span class="arrow">›</span>
+  </a>
+
+  <a class="hub-card" href="mapa-itinerario.html">
+    <span class="icon">🗺️</span>
+    <span class="body">
+      <div class="ctitle">Mapa del itinerario</div>
+      <div class="cdesc">Los 3 días sobre el mapa, con la ruta sugerida por colores</div>
+    </span>
+    <span class="arrow">›</span>
+  </a>
+
+  <div class="section-label">
+    <span class="num">04</span>
+    <h2>PRÓXIMAMENTE</h2>
+    <span class="rule"></span>
+  </div>
+
+  <div class="add-card">
+    <span class="icon">＋</span>
+    <span class="body">
+      <div class="ctitle">Nueva sección</div>
+      <div class="cdesc">Alojamiento, itinerario, restaurantes...</div>
+    </span>
+  </div>
+
+  <div class="foot-note">Panel del viaje a Berlín · pulsa una tarjeta para abrir esa sección</div>
+
+</div>
 
 </body>
 </html>
