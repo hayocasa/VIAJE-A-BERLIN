@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dónde comer barato · Berlín 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;900&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --yellow:#F7D417;
+    --yellow-deep:#E0BC00;
+    --ink:#151812;
+    --ink-soft:#4A4E45;
+    --paper:#F5F3EA;
+    --plate:#1B2A22;
+    --plate-2:#22352A;
+    --red:#C1401F;
+    --line:#1B2A22;
+    --white:#FFFDF6;
+    --radius-s:2px;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--paper);
+    background-image:radial-gradient(circle at 1px 1px, rgba(27,42,34,0.06) 1px, transparent 0);
+    background-size:18px 18px;
+    color:var(--ink);
+    font-family:'Work Sans', -apple-system, sans-serif;
+    display:flex;
+    justify-content:center;
+    padding:28px 14px 60px;
+    min-height:100vh;
+  }
+  .frame{width:100%; max-width:440px;}
+
+  /* ---- App bar ---- */
+  .appbar{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:18px;
+  }
+  .back-link{
+    display:flex;
+    align-items:center;
+    gap:6px;
+    text-decoration:none;
+    color:var(--ink);
+    font-family:'Archivo',sans-serif;
+    font-weight:700;
+    font-size:13px;
+  }
+  .appbar .tag{
+    font-family:'Archivo',sans-serif;
+    font-weight:700;
+    font-size:12px;
+    letter-spacing:0.04em;
+    background:var(--ink);
+    color:var(--yellow);
+    padding:6px 10px;
+    border-radius:var(--radius-s);
+  }
+
+  /* ---- Hero ---- */
+  .hero{
+    background:var(--ink);
+    border-radius:6px;
+    padding:22px 20px 20px;
+    color:var(--white);
+    position:relative;
+    overflow:hidden;
+    margin-bottom:20px;
+  }
+  .hero::after{
+    content:"";
+    position:absolute;
+    right:-30px; top:-30px;
+    width:140px;height:140px;
+    background:var(--yellow);
+    opacity:0.12;
+    border-radius:50%;
+  }
+  .hero h1{
+    font-family:'Archivo', sans-serif;
+    font-weight:900;
+    font-size:24px;
+    line-height:1.1;
+    margin:0 0 6px;
+  }
+  .hero p{
+    font-size:13px;
+    color:rgba(255,253,246,0.7);
+    margin:0;
+  }
+
+  /* ---- Place card (acordeón) ---- */
+  .place-card{
+    background:var(--white);
+    border:1.5px solid var(--ink);
+    border-radius:6px;
+    padding:18px;
+    margin-bottom:16px;
+  }
+  .place-top{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    width:100%;
+    background:none;
+    border:none;
+    padding:0;
+    margin:0;
+    text-align:left;
+    cursor:pointer;
+    font-family:inherit;
+    color:inherit;
+  }
+  .chevron{
+    flex-shrink:0;
+    font-size:18px;
+    color:var(--ink-soft);
+    transition:transform 0.2s ease;
+  }
+  .place-card.open .chevron{transform:rotate(180deg);}
+  .place-body{display:none;}
+  .place-card.open .place-body{
+    display:block;
+    animation:reveal 0.2s ease;
+  }
+  @keyframes reveal{from{opacity:0; transform:translateY(-4px);} to{opacity:1; transform:translateY(0);}}
+  .place-icon{
+    flex-shrink:0;
+    width:42px; height:42px;
+    border-radius:50%;
+    background:var(--yellow);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:19px;
+  }
+  .place-title{
+    font-family:'Archivo',sans-serif;
+    font-weight:700;
+    font-size:17px;
+    line-height:1.15;
+  }
+  .place-meta{
+    font-size:12px;
+    color:var(--ink-soft);
+    margin-top:1px;
+  }
+  .price-badge{
+    display:inline-block;
+    margin-top:5px;
+    font-family:'Archivo',sans-serif;
+    font-weight:700;
+    font-size:11px;
+    background:var(--yellow);
+    color:var(--ink);
+    padding:2px 7px;
+    border-radius:10px;
+  }
+
+  .actions-row{
+    display:flex;
+    gap:8px;
+    margin:14px 0 4px;
+  }
+  .listen-btn{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:7px;
+    flex:1;
+    padding:11px;
+    border:1.5px solid var(--ink);
+    border-radius:20px;
+    background:transparent;
+    font-family:'Archivo',sans-serif;
+    font-weight:700;
+    font-size:12.5px;
+    color:var(--ink);
+    cursor:pointer;
+    transition:background 0.15s ease, color 0.15s ease;
+  }
+  .listen-btn:hover{background:var(--ink); color:var(--yellow);}
+  .listen-btn.playing{background:var(--red); color:var(--white); border-color:var(--red);}
+  .listen-btn .wave{font-size:14px;}
+
+  .maps-link{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:7px;
+    flex:1;
+    text-decoration:none;
+    padding:11px;
+    border:1.5px solid var(--ink);
+    border-radius:20px;
+    font-family:'Archivo',sans-serif;
+    font-weight:700;
+    font-size:12.5px;
+    color:var(--ink);
+    transition:background 0.15s ease, color 0.15s ease;
+  }
+  .maps-link:hover{background:var(--ink); color:var(--yellow);}
+  .maps-link svg{width:13px; height:13px; flex-shrink:0;}
+
+  .place-section{margin-top:16px;}
+  .place-section h4{
+    font-family:'Archivo',sans-serif;
+    font-weight:700;
+    font-size:12px;
+    letter-spacing:0.04em;
+    color:var(--ink-soft);
+    text-transform:uppercase;
+    margin:0 0 6px;
+  }
+  .place-section p{
+    font-size:13.5px;
+    line-height:1.55;
+    margin:0;
+  }
+  .place-section ul{
+    margin:0;
+    padding-left:18px;
+  }
+  .place-section li{
+    font-size:13.5px;
+    line-height:1.55;
+    margin-bottom:5px;
+  }
+  .place-section li:last-child{margin-bottom:0;}
+
+  .heads-up{
+    font-size:12px;
+    color:var(--ink-soft);
+    line-height:1.5;
+    background:rgba(193,64,31,0.08);
+    border-left:2.5px solid var(--red);
+    padding:8px 10px;
+    margin-top:12px;
+  }
+
+  .foot-note{
+    text-align:center;
+    font-size:11.5px;
+    color:var(--ink-soft);
+    margin-top:20px;
+    line-height:1.5;
+  }
+</style>
+</head>
+<body>
+
+<div class="frame">
+
+  <div class="appbar">
+    <a class="back-link" href="index.html">← Panel</a>
+    <span class="tag">COMIDA</span>
+  </div>
+
+  <div class="hero">
+    <h1>Dónde comer barato</h1>
+    <p>5 clásicos de Berlín para comer bien sin gastar mucho: de pie, sin reserva y con mucha historia detrás.</p>
+  </div>
+
+  <!-- 1: Curry 36 -->
+  <div class="place-card">
+    <button class="place-top" onclick="toggleCard(this)">
+      <span class="place-icon">🌭</span>
+      <div>
+        <div class="place-title">Curry 36</div>
+        <div class="place-meta">Mehringdamm 36 · Kreuzberg</div>
+        <span class="price-badge">3,50–8 €</span>
+      </div>
+      <span class="chevron">⌄</span>
+    </button>
+    <div class="place-body">
+      <div class="actions-row">
+        <button class="listen-btn" onclick="toggleSpeak(this)"><span class="wave">🔊</span><span class="lbl">Escuchar</span></button>
+        <a class="maps-link" href="https://www.google.com/maps/search/?api=1&query=Curry+36%2C+Mehringdamm+36%2C+Berlin" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          Cómo llegar
+        </a>
+      </div>
+      <div class="place-section">
+        <h4>Qué es</h4>
+        <p class="place-text">El puesto de currywurst más famoso de Berlín Oeste, abierto desde 1981 en Mehringdamm y funcionando hasta las 5 de la madrugada. Aquí se mezclan taxistas, política y turistas a partes iguales, de pie en las mesas altas de la acera. Pide la Currywurst mit Darm (con piel natural) o ohne Darm (sin piel, más clásica de Berlín Oeste), con Pommes.</p>
+      </div>
+      <div class="place-section">
+        <h4>Por qué merece la pena</h4>
+        <ul class="place-text">
+          <li>Es de los pocos sitios donde puedes cenar de madrugada tras una noche de fiesta, exactamente igual que un berlinés.</li>
+          <li>Con el bocadillo, las patatas y una cerveza no se suele pasar de 10 €.</li>
+          <li>Está muy cerca de Mustafa's Gemüse Kebap: si las colas de los dos son largas, podéis dividiros y hacer cola cada uno en un sitio.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2: Mustafa's Gemüse Kebap -->
+  <div class="place-card">
+    <button class="place-top" onclick="toggleCard(this)">
+      <span class="place-icon">🥙</span>
+      <div>
+        <div class="place-title">Mustafa's Gemüse Kebap</div>
+        <div class="place-meta">Mehringdamm 32 · Kreuzberg</div>
+        <span class="price-badge">~6–7 €</span>
+      </div>
+      <span class="chevron">⌄</span>
+    </button>
+    <div class="place-body">
+      <div class="actions-row">
+        <button class="listen-btn" onclick="toggleSpeak(this)"><span class="wave">🔊</span><span class="lbl">Escuchar</span></button>
+        <a class="maps-link" href="https://www.google.com/maps/search/?api=1&query=Mustafa%27s+Gem%C3%BCse+Kebap%2C+Mehringdamm+32%2C+Berlin" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          Cómo llegar
+        </a>
+      </div>
+      <div class="place-section">
+        <h4>Qué es</h4>
+        <p class="place-text">El kebab más famoso de Berlín, casi vecino de Curry 36. Su especialidad es el gemüse kebap: pollo a la parrilla con verduras asadas (calabacín, berenjena, patata), lechuga y queso de cabra desmenuzado por encima, todo dentro de un pan de pita tostado.</p>
+      </div>
+      <div class="place-section">
+        <h4>Por qué merece la pena</h4>
+        <ul class="place-text">
+          <li>El döner nació en Berlín de la mano de la inmigración turca, y Mustafa's es de los locales que mejor representan esa historia.</li>
+          <li>Aviso honesto: la cola es larga casi siempre (30-60 min en hora punta). Ve fuera de la hora de comer (antes de las 12:30 o después de las 20:00) si no quieres esperar tanto.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3: Konnopke's Imbiss -->
+  <div class="place-card">
+    <button class="place-top" onclick="toggleCard(this)">
+      <span class="place-icon">🚃</span>
+      <div>
+        <div class="place-title">Konnopke's Imbiss</div>
+        <div class="place-meta">Schönhauser Allee 44b · Prenzlauer Berg</div>
+        <span class="price-badge">4–7 €</span>
+      </div>
+      <span class="chevron">⌄</span>
+    </button>
+    <div class="place-body">
+      <div class="actions-row">
+        <button class="listen-btn" onclick="toggleSpeak(this)"><span class="wave">🔊</span><span class="lbl">Escuchar</span></button>
+        <a class="maps-link" href="https://www.google.com/maps/search/?api=1&query=Konnopke%27s+Imbiss%2C+Sch%C3%B6nhauser+Allee+44b%2C+Berlin" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          Cómo llegar
+        </a>
+      </div>
+      <div class="place-section">
+        <h4>Qué es</h4>
+        <p class="place-text">El "hermano del Este" de Curry 36: un puesto de salchichas bajo las vías elevadas del metro en Prenzlauer Berg, funcionando en el mismo sitio desde 1930. Fue el primero de Berlín Este en servir currywurst, desde 1960. Pide la Currywurst mit Darm, la variante clásica del este de la ciudad.</p>
+      </div>
+      <div class="place-section">
+        <h4>Por qué merece la pena</h4>
+        <ul class="place-text">
+          <li>Sobrevivió a la hiperinflación, la Segunda Guerra Mundial y la RDA: es casi un siglo de historia berlinesa en una salchicha.</li>
+          <li>Si os animáis a comparar, la combinación Curry 36 (Oeste) + Konnopke's (Este) el mismo viaje es todo un ritual entre berlineses.</li>
+          <li>Cierra los lunes y domingos, tenedlo en cuenta al planificar el día.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4: Burgermeister -->
+  <div class="place-card">
+    <button class="place-top" onclick="toggleCard(this)">
+      <span class="place-icon">🍔</span>
+      <div>
+        <div class="place-title">Burgermeister</div>
+        <div class="place-meta">Schlesisches Tor · Kreuzberg</div>
+        <span class="price-badge">~5–6 €</span>
+      </div>
+      <span class="chevron">⌄</span>
+    </button>
+    <div class="place-body">
+      <div class="actions-row">
+        <button class="listen-btn" onclick="toggleSpeak(this)"><span class="wave">🔊</span><span class="lbl">Escuchar</span></button>
+        <a class="maps-link" href="https://www.google.com/maps/search/?api=1&query=Burgermeister+Schlesisches+Tor%2C+Oberbaumstra%C3%9Fe+8%2C+Berlin" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          Cómo llegar
+        </a>
+      </div>
+      <div class="place-section">
+        <h4>Qué es</h4>
+        <p class="place-text">Un puesto de hamburguesas metido literalmente dentro de un antiguo baño público de 1920, bajo las vías elevadas de la estación Schlesisches Tor. Tras tres años peleando por el permiso, abrió en 2006 y hoy es una de las hamburguesas con más culto de la ciudad. Prueba la Chili-Burger si te gusta el picante.</p>
+      </div>
+      <div class="place-section">
+        <h4>Por qué merece la pena</h4>
+        <ul class="place-text">
+          <li>La anécdota del "antiguo baño público" ya es motivo suficiente para pasarse, pero las hamburguesas cumplen de verdad.</li>
+          <li>Abierto hasta tarde (incluso hasta las 4:00 los viernes y sábados), buena opción para rematar una noche de fiesta.</li>
+          <li>Solo efectivo en la mayoría de puestos, así que lleva algo de cash.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5: Markthalle Neun -->
+  <div class="place-card">
+    <button class="place-top" onclick="toggleCard(this)">
+      <span class="place-icon">🏪</span>
+      <div>
+        <div class="place-title">Markthalle Neun</div>
+        <div class="place-meta">Eisenbahnstraße 42/43 · Kreuzberg</div>
+        <span class="price-badge">según puesto</span>
+      </div>
+      <span class="chevron">⌄</span>
+    </button>
+    <div class="place-body">
+      <div class="actions-row">
+        <button class="listen-btn" onclick="toggleSpeak(this)"><span class="wave">🔊</span><span class="lbl">Escuchar</span></button>
+        <a class="maps-link" href="https://www.google.com/maps/search/?api=1&query=Markthalle+Neun%2C+Eisenbahnstra%C3%9Fe+42%2C+Berlin" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          Cómo llegar
+        </a>
+      </div>
+      <div class="place-section">
+        <h4>Qué es</h4>
+        <p class="place-text">Un mercado cubierto de hierro y cristal de 1891, reabierto en 2011, con puestos fijos de pescado, quesos, pasta fresca y panadería, más varios puestos de comida para llevar (bien de precio, no como los restaurantes con mesa) donde comer de pie o en las mesas comunes.</p>
+      </div>
+      <div class="place-section">
+        <h4>Por qué merece la pena</h4>
+        <ul class="place-text">
+          <li>Buena parada para variar del típico currywurst/döner sin gastar mucho más, con opciones de todo tipo de cocina.</li>
+          <li>Cierra los domingos; el resto de la semana el horario habitual es de 9:00 a 20:00 (jueves hasta las 22:00).</li>
+        </ul>
+        <div class="heads-up">⚠️ Su evento más famoso, el "Street Food Thursday" con puestos extra de comida internacional, es todos los jueves — y vuestro viaje va de viernes 9 a martes 13 de octubre, así que no coincidís con ningún jueves. Aun así, el mercado merece la visita cualquier otro día por sus puestos fijos.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="foot-note">El audio usa la voz del navegador (Web Speech API) · no necesita conexión a APIs externas</div>
+
+</div>
+
+<script>
+  let currentUtterance = null;
+  let currentBtn = null;
+
+  function toggleCard(header){
+    const card = header.closest('.place-card');
+    const wasOpen = card.classList.contains('open');
+
+    if(wasOpen && currentBtn && card.contains(currentBtn)){
+      speechSynthesis.cancel();
+      resetBtn(currentBtn);
+      currentUtterance = null;
+      currentBtn = null;
+    }
+
+    card.classList.toggle('open');
+  }
+
+  function resetBtn(btn){
+    btn.classList.remove('playing');
+    btn.querySelector('.lbl').textContent = 'Escuchar';
+    btn.querySelector('.wave').textContent = '🔊';
+  }
+
+  function toggleSpeak(btn){
+    const card = btn.closest('.place-card');
+    const text = Array.from(card.querySelectorAll('.place-text'))
+      .map(el => el.innerText)
+      .join('. ');
+
+    if(currentBtn === btn){
+      speechSynthesis.cancel();
+      resetBtn(btn);
+      currentUtterance = null;
+      currentBtn = null;
+      return;
+    }
+
+    if(currentBtn){
+      speechSynthesis.cancel();
+      resetBtn(currentBtn);
+    }
+
+    const utter = new SpeechSynthesisUtterance(text);
+    utter.lang = 'es-ES';
+    utter.rate = 0.95;
+    utter.onend = () => {
+      resetBtn(btn);
+      currentUtterance = null;
+      currentBtn = null;
+    };
+
+    btn.classList.add('playing');
+    btn.querySelector('.lbl').textContent = 'Detener';
+    btn.querySelector('.wave').textContent = '⏸';
+
+    speechSynthesis.speak(utter);
+    currentUtterance = utter;
+    currentBtn = btn;
+  }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Historia de Berlín · Berlín 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;900&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --yellow:#F7D417;
+    --yellow-deep:#E0BC00;
+    --ink:#151812;
+    --ink-soft:#4A4E45;
+    --paper:#F5F3EA;
+    --plate:#1B2A22;
+    --plate-2:#22352A;
+    --red:#C1401F;
+    --line:#1B2A22;
+    --white:#FFFDF6;
+    --radius-s:2px;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--paper);
+    background-image:radial-gradient(circle at 1px 1px, rgba(27,42,34,0.06) 1px, transparent 0);
+    background-size:18px 18px;
+    color:var(--ink);
+    font-family:'Work Sans', -apple-system, sans-serif;
+    display:flex;
+    justify-content:center;
+    padding:28px 14px 60px;
+    min-height:100vh;
+  }
+  .frame{width:100%; max-width:440px;}
+
+  /* ---- App bar ---- */
+  .appbar{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:18px;
+  }
+  .back-link{
+    display:flex;
+    align-items:center;
+    gap:6px;
+    text-decoration:none;
+    color:var(--ink);
+    font-family:'Archivo',sans-serif;
+    font-weight:700;
+    font-size:13px;
+  }
+  .appbar .tag{
+    font-family:'Archivo',sans-serif;
+    font-weight:700;
+    font-size:12px;
+    letter-spacing:0.04em;
+    background:var(--ink);
+    color:var(--yellow);
+    padding:6px 10px;
+    border-radius:var(--radius-s);
+  }
+
+  /* ---- Hero ---- */
+  .hero{
+    background:var(--ink);
+    border-radius:6px;
+    padding:22px 20px 20px;
+    color:var(--white);
+    position:relative;
+    overflow:hidden;
+    margin-bottom:22px;
+  }
+  .hero::after{
+    content:"";
+    position:absolute;
+    right:-30px; top:-30px;
+    width:140px;height:140px;
+    background:var(--yellow);
+    opacity:0.12;
+    border-radius:50%;
+  }
+  .hero h1{
+    font-family:'Archivo', sans-serif;
+    font-weight:900;
+    font-size:24px;
+    line-height:1.1;
+    margin:0 0 6px;
+  }
+  .hero p{
+    font-size:13px;
+    color:rgba(255,253,246,0.7);
+    margin:0;
+  }
+
+  /* ---- Timeline ---- */
+  .timeline{
+    position:relative;
+  }
+  .chrono-item{
+    position:relative;
+    padding-left:52px;
+    margin-bottom:18px;
+  }
+  .chrono-item::before{
+    content:"";
+    position:absolute;
+    left:20px; top:44px; bottom:-18px;
+    width:2.5px;
+    background:var(--line);
+    opacity:0.25;
+  }
+  .chrono-item:last-child::before{display:none;}
+  .chrono-dot{
+    position:absolute;
+    left:0; top:0;
+    width:42px; height:42px;
+    border-radius:50%;
+    background:var(--yellow);
+    border:1.5px solid var(--ink);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:19px;
+    z-index:1;
+  }
+
+  /* ---- Era card (acordeón) ---- */
+  .place-card{
+    background:var(--white);
+    border:1.5px solid var(--ink);
+    border-radius:6px;
+    padding:16px;
+  }
+  .place-top{
+    display:flex;
+    align-items:center;
+    gap:0;
+    width:100%;
+    background:none;
+    border:none;
+    padding:0;
+    margin:0;
+    text-align:left;
+    cursor:pointer;
+    font-family:inherit;
+    color:inherit;
+  }
+  .place-top .headtext{flex:1;}
+  .chevron{
+    flex-shrink:0;
+    font-size:18px;
+    color:var(--ink-soft);
+    transition:transform 0.2s ease;
+    margin-left:8px;
+  }
+  .place-card.open .chevron{transform:rotate(180deg);}
+  .place-body{display:none;}
+  .place-card.open .place-body{
+    display:block;
+    animation:reveal 0.2s ease;
+  }
+  @keyframes reveal{from{opacity:0; transform:translateY(-4px);} to{opacity:1; transform:translateY(0);}}
+
+  .place-title{
+    font-family:'Archivo',sans-serif;
+    font-weight:700;
+    font-size:16px;
+    line-height:1.2;
+  }
+  .year-badge{
+    display:inline-block;
+    margin-top:5px;
+    font-family:'Archivo',sans-serif;
+    font-weight:700;
+    font-size:11px;
+    background:var(--yellow);
+    color:var(--ink);
+    padding:2px 7px;
+    border-radius:10px;
+  }
+
+  .listen-btn{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:7px;
+    width:100%;
+    margin:14px 0 4px;
+    padding:11px;
+    border:1.5px solid var(--ink);
+    border-radius:20px;
+    background:transparent;
+    font-family:'Archivo',sans-serif;
+    font-weight:700;
+    font-size:12.5px;
+    color:var(--ink);
+    cursor:pointer;
+    transition:background 0.15s ease, color 0.15s ease;
+  }
+  .listen-btn:hover{background:var(--ink); color:var(--yellow);}
+  .listen-btn.playing{background:var(--red); color:var(--white); border-color:var(--red);}
+  .listen-btn .wave{font-size:14px;}
+
+  .place-section{margin-top:16px;}
+  .place-section h4{
+    font-family:'Archivo',sans-serif;
+    font-weight:700;
+    font-size:12px;
+    letter-spacing:0.04em;
+    color:var(--ink-soft);
+    text-transform:uppercase;
+    margin:0 0 6px;
+  }
+  .place-section p{
+    font-size:13.5px;
+    line-height:1.55;
+    margin:0;
+  }
+  .place-section ul{
+    margin:0;
+    padding-left:18px;
+  }
+  .place-section li{
+    font-size:13.5px;
+    line-height:1.55;
+    margin-bottom:5px;
+  }
+  .place-section li:last-child{margin-bottom:0;}
+
+  .foot-note{
+    text-align:center;
+    font-size:11.5px;
+    color:var(--ink-soft);
+    margin-top:20px;
+    line-height:1.5;
+  }
+</style>
+</head>
+<body>
+
+<div class="frame">
+
+  <div class="appbar">
+    <a class="back-link" href="index.html">← Panel</a>
+    <span class="tag">HISTORIA</span>
+  </div>
+
+  <div class="hero">
+    <h1>Berlín en el siglo XX</h1>
+    <p>De capital imperial a ciudad partida en dos: las seis etapas que explican el Berlín que vais a visitar.</p>
+  </div>
+
+  <div class="timeline">
+
+    <!-- 1 -->
+    <div class="chrono-item">
+      <span class="chrono-dot">🏰</span>
+      <div class="place-card">
+        <button class="place-top" onclick="toggleCard(this)">
+          <span class="headtext">
+            <div class="place-title">Berlín imperial y la Primera Guerra Mundial</div>
+            <span class="year-badge">1871–1918</span>
+          </span>
+          <span class="chevron">⌄</span>
+        </button>
+        <div class="place-body">
+          <button class="listen-btn" onclick="toggleSpeak(this)"><span class="wave">🔊</span><span class="lbl">Escuchar</span></button>
+          <div class="place-section">
+            <h4>Qué pasó</h4>
+            <p class="place-text">Tras la unificación alemana de 1871, Berlín se convierte en capital del nuevo Imperio y crece a toda velocidad hasta ser una de las grandes metrópolis industriales de Europa. En 1914 estalla la Primera Guerra Mundial; la ciudad vive el conflicto desde la retaguardia, sufriendo el bloqueo naval aliado y una escasez de alimentos tan dura que 1916-17 se recuerda como el "invierno de los nabos". La derrota de 1918 desata la Revolución de Noviembre: el káiser Guillermo II abdica y huye, y el 9 de noviembre se proclama la república desde un balcón del Reichstag.</p>
+          </div>
+          <div class="place-section">
+            <h4>Curiosidades</h4>
+            <ul class="place-text">
+              <li>Ese mismo 9 de noviembre de 1918 hubo dos proclamaciones de república rivales en cuestión de horas, una socialdemócrata y otra comunista: un anticipo de la inestabilidad que vendría.</li>
+              <li>El bloqueo naval británico siguió varios meses después del armisticio, agravando el hambre en la ciudad.</li>
+              <li>El 9 de noviembre se repetirá, casi como una fecha maldita, dos veces más en el siglo: la Kristallnacht de 1938 y la caída del Muro en 1989.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2 -->
+    <div class="chrono-item">
+      <span class="chrono-dot">🎭</span>
+      <div class="place-card">
+        <button class="place-top" onclick="toggleCard(this)">
+          <span class="headtext">
+            <div class="place-title">La República de Weimar: caos y esplendor</div>
+            <span class="year-badge">1919–1933</span>
+          </span>
+          <span class="chevron">⌄</span>
+        </button>
+        <div class="place-body">
+          <button class="listen-btn" onclick="toggleSpeak(this)"><span class="wave">🔊</span><span class="lbl">Escuchar</span></button>
+          <div class="place-section">
+            <h4>Qué pasó</h4>
+            <p class="place-text">Berlín es la capital de la nueva República de Weimar. Pese a la inestabilidad política y a la brutal hiperinflación de 1923, la ciudad vive también sus "años dorados": es una de las capitales más vanguardistas del mundo en cine, cabaret, arquitectura (Bauhaus) y vida nocturna, la Berlín de Marlene Dietrich y el expresionismo. El crac de 1929 y la Gran Depresión hunden de nuevo la economía y allanan el camino al ascenso del nazismo.</p>
+          </div>
+          <div class="place-section">
+            <h4>Curiosidades</h4>
+            <ul class="place-text">
+              <li>En el punto álgido de la hiperinflación de 1923, un dólar llegó a valer más de 4 billones de marcos; la gente cobraba el sueldo dos veces al día y salía corriendo a gastarlo antes de que perdiera valor con las horas.</li>
+              <li>Berlín llegó a tener más de 170 periódicos diarios en los años 20, y su vida cultural rivalizaba con la de París.</li>
+              <li>El barrio de Schöneberg albergaba una de las escenas gay más visibles de Europa en esa época, hasta que los nazis la aplastaron por completo tras 1933.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3 -->
+    <div class="chrono-item">
+      <span class="chrono-dot">⚔️</span>
+      <div class="place-card">
+        <button class="place-top" onclick="toggleCard(this)">
+          <span class="headtext">
+            <div class="place-title">El Berlín nazi y la Segunda Guerra Mundial</div>
+            <span class="year-badge">1933–1945</span>
+          </span>
+          <span class="chevron">⌄</span>
+        </button>
+        <div class="place-body">
+          <button class="listen-btn" onclick="toggleSpeak(this)"><span class="wave">🔊</span><span class="lbl">Escuchar</span></button>
+          <div class="place-section">
+            <h4>Qué pasó</h4>
+            <p class="place-text">Hitler llega al poder como canciller en enero de 1933; el incendio del Reichstag, un mes después, sirve de excusa para suspender las libertades civiles. Berlín se convierte en capital del Tercer Reich y de sus delirantes planes urbanísticos (la nunca construida "Germania" de Speer). En noviembre de 1938 sufre la Kristallnacht contra la población judía. La Segunda Guerra Mundial, iniciada en 1939, golpea la ciudad con bombardeos aliados masivos desde 1943 y termina con la sangrienta Batalla de Berlín: Hitler se suicida en su búnker el 30 de abril de 1945, y la ciudad se rinde al Ejército Rojo dos días después, convertida en gran parte en escombros.</p>
+          </div>
+          <div class="place-section">
+            <h4>Curiosidades</h4>
+            <ul class="place-text">
+              <li>Berlín acogió los Juegos Olímpicos de 1936, usados por los nazis como gran escaparate propagandístico ante el mundo.</li>
+              <li>Al final de la guerra había más de 25 millones de metros cúbicos de escombros en la ciudad; parte se usó después para levantar colinas artificiales, como el propio Teufelsberg.</li>
+              <li>El búnker de Hitler estaba bajo lo que hoy es un discreto aparcamiento junto al Memorial del Holocausto, sin ninguna señal que lo indique.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4 -->
+    <div class="chrono-item">
+      <span class="chrono-dot">✈️</span>
+      <div class="place-card">
+        <button class="place-top" onclick="toggleCard(this)">
+          <span class="headtext">
+            <div class="place-title">Una ciudad partida en cuatro</div>
+            <span class="year-badge">1945–1949</span>
+          </span>
+          <span class="chevron">⌄</span>
+        </button>
+        <div class="place-body">
+          <button class="listen-btn" onclick="toggleSpeak(this)"><span class="wave">🔊</span><span class="lbl">Escuchar</span></button>
+          <div class="place-section">
+            <h4>Qué pasó</h4>
+            <p class="place-text">Al terminar la guerra, los aliados (EE. UU., Reino Unido, Francia y la URSS) dividen Alemania y Berlín en cuatro zonas de ocupación, pese a que la ciudad entera queda enclavada dentro de la zona soviética. En junio de 1948, cuando los aliados occidentales introducen una nueva moneda, Stalin bloquea por tierra todos los accesos a Berlín Oeste para forzar su rendición. La respuesta es el Puente Aéreo de Berlín: durante casi un año, aviones aliados abastecen a más de dos millones de berlineses, hasta que la URSS levanta el bloqueo en mayo de 1949. Meses después nacen dos estados alemanes: la RFA en el oeste y la RDA en el este.</p>
+          </div>
+          <div class="place-section">
+            <h4>Curiosidades</h4>
+            <ul class="place-text">
+              <li>El piloto estadounidense Gail Halvorsen empezó a lanzar chocolatinas atadas a pequeños paracaídas hechos con pañuelos para los niños berlineses; la idea creció hasta convertirse en la "Operation Little Vittles", con toneladas de golosinas lanzadas sobre la ciudad.</li>
+              <li>En el día de mayor actividad del puente aéreo, un avión aterrizaba en Berlín casi cada minuto.</li>
+              <li>El monumento a este episodio, frente al antiguo aeropuerto de Tempelhof, se conoce popularmente como "Hungerharke" (el rastrillo del hambre), por la forma de sus tres arcos.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5 -->
+    <div class="chrono-item">
+      <span class="chrono-dot">🧱</span>
+      <div class="place-card">
+        <button class="place-top" onclick="toggleCard(this)">
+          <span class="headtext">
+            <div class="place-title">El Muro y la Guerra Fría</div>
+            <span class="year-badge">1961–1989</span>
+          </span>
+          <span class="chevron">⌄</span>
+        </button>
+        <div class="place-body">
+          <button class="listen-btn" onclick="toggleSpeak(this)"><span class="wave">🔊</span><span class="lbl">Escuchar</span></button>
+          <div class="place-section">
+            <h4>Qué pasó</h4>
+            <p class="place-text">Durante los años 50, cientos de miles de alemanes del este huyen a Berlín Oeste a través de la ciudad, la única grieta abierta en el Telón de Acero. Para frenar la fuga, en la noche del 12 al 13 de agosto de 1961 la RDA cierra de golpe la frontera y empieza a levantar el Muro de Berlín, que acabará rodeando por completo Berlín Oeste con casi 155 km de vallas, alambre de espino y hormigón. Durante casi 30 años la ciudad vive dividida en dos mundos, y al menos 140 personas mueren intentando cruzarlo. Berlín se convierte en escenario simbólico de la Guerra Fría, con momentos como el discurso de Kennedy en 1963 ("Ich bin ein Berliner") o el de Reagan en 1987 ante la Puerta de Brandeburgo ("Mr. Gorbachev, tear down this wall").</p>
+          </div>
+          <div class="place-section">
+            <h4>Curiosidades</h4>
+            <ul class="place-text">
+              <li>El Muro se levantó con tal secretismo y rapidez que muchos berlineses se acostaron con la ciudad unida y despertaron con familias separadas de la noche a la mañana.</li>
+              <li>Hubo fugas muy ingeniosas: globos aerostáticos caseros, túneles bajo la frontera, coches con dobles fondos e incluso un pequeño submarino construido a mano.</li>
+              <li>El Muro no era una única pared: era un sistema de dos muros paralelos separados por la llamada "franja de la muerte", vigilada con torres, perros y minas.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 6 -->
+    <div class="chrono-item">
+      <span class="chrono-dot">🎉</span>
+      <div class="place-card">
+        <button class="place-top" onclick="toggleCard(this)">
+          <span class="headtext">
+            <div class="place-title">La caída del Muro y la reunificación</div>
+            <span class="year-badge">1989–1990</span>
+          </span>
+          <span class="chevron">⌄</span>
+        </button>
+        <div class="place-body">
+          <button class="listen-btn" onclick="toggleSpeak(this)"><span class="wave">🔊</span><span class="lbl">Escuchar</span></button>
+          <div class="place-section">
+            <h4>Qué pasó</h4>
+            <p class="place-text">En el verano y otoño de 1989, con la URSS ya debilitada bajo Gorbachov, miles de alemanes del este huyen a través de Hungría y Checoslovaquia, y las protestas masivas se multiplican en la RDA. La noche del 9 de noviembre de 1989, un portavoz del gobierno anuncia por error en rueda de prensa que las fronteras quedan abiertas "de inmediato"; esa misma noche miles de berlineses del este se agolpan en los pasos fronterizos, que acaban abriéndose sin que nadie dispare un solo tiro. En los meses siguientes el Muro se derriba a golpe de piqueta, y el 3 de octubre de 1990 Alemania se reunifica oficialmente.</p>
+          </div>
+          <div class="place-section">
+            <h4>Curiosidades</h4>
+            <ul class="place-text">
+              <li>La apertura de esa noche fue en realidad un error de comunicación: el portavoz Günter Schabowski no tenía claro cuándo entraba en vigor la nueva norma y, ante la pregunta de un periodista, respondió "según tengo entendido... inmediatamente, sin demora".</li>
+              <li>A los berlineses que derribaron el Muro a martillazos en los meses siguientes se les apodó "Mauerspechte" (pájaros carpinteros del muro).</li>
+              <li>Hoy quedan solo pequeños tramos en pie, como la East Side Gallery y el Memorial de Bernauer Straße; el 3 de octubre, "Día de la Unidad Alemana", es la fiesta nacional de Alemania.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="foot-note">El audio usa la voz del navegador (Web Speech API) · no necesita conexión a APIs externas</div>
+
+</div>
+
+<script>
+  let currentUtterance = null;
+  let currentBtn = null;
+
+  function toggleCard(header){
+    const card = header.closest('.place-card');
+    const wasOpen = card.classList.contains('open');
+
+    if(wasOpen && currentBtn && card.contains(currentBtn)){
+      speechSynthesis.cancel();
+      resetBtn(currentBtn);
+      currentUtterance = null;
+      currentBtn = null;
+    }
+
+    card.classList.toggle('open');
+  }
+
+  function resetBtn(btn){
+    btn.classList.remove('playing');
+    btn.querySelector('.lbl').textContent = 'Escuchar';
+    btn.querySelector('.wave').textContent = '🔊';
+  }
+
+  function toggleSpeak(btn){
+    const card = btn.closest('.place-card');
+    const text = Array.from(card.querySelectorAll('.place-text'))
+      .map(el => el.innerText)
+      .join('. ');
+
+    if(currentBtn === btn){
+      speechSynthesis.cancel();
+      resetBtn(btn);
+      currentUtterance = null;
+      currentBtn = null;
+      return;
+    }
+
+    if(currentBtn){
+      speechSynthesis.cancel();
+      resetBtn(currentBtn);
+    }
+
+    const utter = new SpeechSynthesisUtterance(text);
+    utter.lang = 'es-ES';
+    utter.rate = 0.95;
+    utter.onend = () => {
+      resetBtn(btn);
+      currentUtterance = null;
+      currentBtn = null;
+    };
+
+    btn.classList.add('playing');
+    btn.querySelector('.lbl').textContent = 'Detener';
+    btn.querySelector('.wave').textContent = '⏸';
+
+    speechSynthesis.speak(utter);
+    currentUtterance = utter;
+    currentBtn = btn;
+  }
+</script>
+
+</body>
+</html>
